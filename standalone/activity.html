@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity — Tracto Healthcare</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body class="app-body" data-page="activity">
+<div class="app-shell" id="app-shell">
+  <main class="app-main">
+    <header class="page-header">
+      <div>
+        <h1>Activity</h1>
+        <p class="sub">Movement guided by your age, vitals, and goals — with progress you can see.</p>
+      </div>
+      <button type="button" class="btn btn-teal btn-sm" id="btn-log-activity">Log activity</button>
+    </header>
+
+    <div class="stack">
+      <!-- Personalized guidance -->
+      <section class="card guide-card">
+        <div class="card-title">Today’s personalised targets</div>
+        <p class="card-meta" id="guide-basis">Based on your profile and recent health metrics</p>
+        <div class="target-grid" id="target-grid">
+          <div class="target-pill">
+            <span class="lbl">Steps</span>
+            <span class="val" id="t-steps">—</span>
+          </div>
+          <div class="target-pill">
+            <span class="lbl">Calories to burn</span>
+            <span class="val" id="t-cals">—</span>
+          </div>
+          <div class="target-pill">
+            <span class="lbl">Suggested move</span>
+            <span class="val" id="t-move">—</span>
+          </div>
+          <div class="target-pill">
+            <span class="lbl">Intensity</span>
+            <span class="val" id="t-intensity">—</span>
+          </div>
+        </div>
+        <p class="guide-note" id="guide-note"></p>
+      </section>
+
+      <!-- Progress tracking -->
+      <section class="card">
+        <div class="card-title">Today’s progress</div>
+        <div class="progress-split">
+          <div>
+            <div class="bar-row"><span>Steps</span><span id="p-steps-lbl">0 / 0</span></div>
+            <div class="bar-track"><div class="bar-fill grad" id="p-steps-bar" style="width:0%"></div></div>
+          </div>
+          <div>
+            <div class="bar-row"><span>Calories burned</span><span id="p-cals-lbl">0 / 0</span></div>
+            <div class="bar-track"><div class="bar-fill vio" id="p-cals-bar" style="width:0%"></div></div>
+          </div>
+        </div>
+        <div class="stat-row" style="margin-top:1rem">
+          <div class="stat-item"><div class="lbl">Active min</div><div class="val" id="p-mins">28</div></div>
+          <div class="stat-item"><div class="lbl">Week active days</div><div class="val">4<span class="unit"> / 5</span></div></div>
+          <div class="stat-item"><div class="lbl">Streak</div><div class="val">8<span class="unit"> days</span></div></div>
+        </div>
+      </section>
+
+      <section class="card chart-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem">
+          <div class="card-title" style="margin:0">Activity progress</div>
+          <div class="chart-filters" role="group" aria-label="Activity range">
+            <button type="button" class="active" data-act-range="week">Week</button>
+            <button type="button" data-act-range="month">Month</button>
+          </div>
+        </div>
+        <div class="bar-chart" id="act-bars" aria-label="Activity steps chart"></div>
+        <p class="card-meta" id="act-chart-meta" style="margin-top:.75rem">Steps this week · avg 7,840</p>
+      </section>
+
+      <section class="card weight-card">
+        <div class="cycle-head">
+          <div class="metric-ico-lg" style="background:rgba(0,212,180,.12);color:var(--pulse-teal)">⚖</div>
+          <div style="flex:1">
+            <div class="card-title" style="margin:0">Weekly weight check-in</div>
+            <p class="card-meta">Log once a week · celebrate when you hit your target.</p>
+          </div>
+          <button type="button" class="btn btn-teal btn-sm" id="btn-log-weight">Log weight</button>
+        </div>
+        <div class="weight-stats">
+          <div><span class="lbl">Current</span><strong id="w-current">62.0 kg</strong></div>
+          <div><span class="lbl">Target</span><strong id="w-target">58.0 kg</strong></div>
+          <div><span class="lbl">Change</span><strong id="w-delta" style="color:var(--pulse-teal)">−0.4 kg</strong></div>
+        </div>
+        <div class="weight-spark" id="weight-spark" aria-hidden="true"></div>
+      </section>
+
+      <!-- Trainer videos + YouTube -->
+      <section class="card yt-card" id="yt-card">
+        <div class="coach-row">
+          <div class="yt-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22"><path fill="currentColor" d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 00.5 6.2 31 31 0 000 12a31 31 0 00.5 5.8 3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1A31 31 0 0024 12a31 31 0 00-.5-5.8zM9.8 15.5v-7l6.2 3.5-6.2 3.5z"/></svg>
+          </div>
+          <div style="flex:1">
+            <div class="card-title" style="margin:0">YouTube workouts</div>
+            <p class="card-meta" id="yt-status">Link your YouTube account to play trainer-suggested workout videos here.</p>
+          </div>
+        </div>
+        <div class="coach-actions">
+          <button type="button" class="btn btn-teal btn-sm" id="btn-yt-link">Link YouTube</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="btn-yt-unlink" hidden>Disconnect</button>
+          <a class="btn btn-ghost btn-sm" href="profile.html">Manage plan</a>
+        </div>
+      </section>
+
+      <div>
+        <div class="section-label">Suggested workout videos</div>
+        <p class="card-meta" style="margin:-.35rem 0 .85rem">Placeholder sessions from Tracto trainers · play after linking YouTube</p>
+        <div class="video-grid" id="video-grid"></div>
+      </div>
+
+      <!-- Coaching / nutrition consult -->
+      <section class="card coach-card">
+        <div class="coach-row">
+          <div class="coach-avatar" aria-hidden="true">🏋️</div>
+          <div style="flex:1">
+            <div class="card-title" style="margin:0">Coach &amp; nutrition guidance</div>
+            <p class="card-meta">Book a consult with a fitness coach or trainer. Membership is managed in Profile.</p>
+          </div>
+        </div>
+        <div class="coach-actions">
+          <button type="button" class="btn btn-teal btn-sm" id="btn-book-coach">Book consultation</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="btn-nutrition-coach">Ask about nutrition</button>
+        </div>
+        <p class="form-hint" id="coach-lock-hint" hidden>Available on Intermediate and Advanced plans — upgrade in Profile.</p>
+      </section>
+
+      <!-- Achievements / streak keep light -->
+      <section class="card" style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+        <div style="font-size:2rem" aria-hidden="true">🔥</div>
+        <div style="flex:1">
+          <div class="card-value" style="font-size:1.25rem">8-day streak</div>
+          <p class="card-meta">You’ve moved with intention eight days in a row.</p>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-start-walk">Start a walk</button>
+      </section>
+
+      <div id="walk-panel" class="walk-active" hidden>
+        <p class="card-title" style="color:var(--pulse-teal)">Activity in progress</p>
+        <div class="timer" id="walk-timer">00:00</div>
+        <p class="card-meta" style="margin:.5rem 0 1rem"><span id="walk-steps">0</span> sample steps · prototype simulation</p>
+        <button type="button" class="btn btn-ghost btn-sm" id="btn-stop-walk">Stop</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="app-shell.js"></script>
+<script>
+(function () {
+  const profile = Tracto.storageGet('tracto_profile', {
+    dob: '1998-06-15',
+    height: 165,
+    weight: 62,
+    activity: 'Lightly active',
+    restingHr: 68,
+    sleepHours: 7.4,
+  });
+  const goalsOnboard = Tracto.storageGet('tracto_goals', { steps: 10000 });
+  let plan = Tracto.storageGet('tracto_plan', 'basic');
+  let ytLinked = !!Tracto.storageGet('tracto_youtube', null);
+  const today = Tracto.storageGet('tracto_activity_today', { steps: 6420, cals: 280, mins: 28 });
+
+  const VIDEOS = [
+    { id: 'v1', title: 'Morning mobility flow', coach: 'Coach Anika', level: 'basic', tag: 'Mobility', dur: '12:04', channel: 'Tracto Trainers' },
+    { id: 'v2', title: 'Brisk walk intervals', coach: 'Coach Rohan', level: 'basic', tag: 'Cardio', dur: '18:22', channel: 'Tracto Trainers' },
+    { id: 'v3', title: 'Low-impact strength', coach: 'Coach Anika', level: 'intermediate', tag: 'Strength', dur: '22:10', channel: 'Tracto Strength' },
+    { id: 'v4', title: 'Desk-break stretch', coach: 'Coach Maya', level: 'intermediate', tag: 'Recovery', dur: '10:45', channel: 'Tracto Recovery' },
+    { id: 'v5', title: 'Zone 2 cardio builder', coach: 'Coach Rohan', level: 'advanced', tag: 'Cardio', dur: '28:00', channel: 'Tracto Cardio' },
+    { id: 'v6', title: 'Core + posture reset', coach: 'Coach Maya', level: 'advanced', tag: 'Core', dur: '16:30', channel: 'Tracto Trainers' },
+  ];
+
+  const PLAN_RANK = { basic: 0, intermediate: 1, advanced: 2 };
+
+  function ageFromDob(dob) {
+    const d = new Date(dob);
+    if (Number.isNaN(d.getTime())) return 28;
+    const now = new Date();
+    let age = now.getFullYear() - d.getFullYear();
+    const m = now.getMonth() - d.getMonth();
+    if (m < 0 || (m === 0 && now.getDate() < d.getDate())) age -= 1;
+    return Math.max(16, Math.min(80, age));
+  }
+
+  function personalise() {
+    const age = ageFromDob(profile.dob);
+    const weight = +profile.weight || 62;
+    const rhr = +profile.restingHr || 68;
+    const sleep = +profile.sleepHours || 7;
+    const activity = profile.activity || 'Lightly active';
+
+    let steps = 8000;
+    let cals = 320;
+    let move = 'Brisk walking';
+    let intensity = 'Moderate';
+    let note = '';
+
+    if (age < 30) {
+      steps = 10000; cals = 420; move = 'Mix of cardio + strength'; intensity = 'Moderate–high';
+    } else if (age < 45) {
+      steps = 9000; cals = 380; move = 'Brisk walk + bodyweight'; intensity = 'Moderate';
+    } else if (age < 60) {
+      steps = 7500; cals = 300; move = 'Steady walk + mobility'; intensity = 'Light–moderate';
+    } else {
+      steps = 6000; cals = 240; move = 'Gentle walk + balance'; intensity = 'Light';
+    }
+
+    if (activity === 'Sedentary') { steps = Math.round(steps * 0.85); cals = Math.round(cals * 0.85); }
+    if (activity === 'Very active') { steps = Math.round(steps * 1.1); cals = Math.round(cals * 1.15); move = 'Structured workout + recovery'; }
+
+    if (rhr > 75) {
+      intensity = 'Light–moderate';
+      move = 'Zone 2 walking (keep conversation pace)';
+      cals = Math.round(cals * 0.9);
+      note = 'Resting HR is a bit elevated — favour aerobic Zone 2 today and avoid hard intervals.';
+    } else if (sleep < 6.5) {
+      intensity = 'Light';
+      move = 'Mobility + easy walk';
+      steps = Math.round(steps * 0.9);
+      note = 'Sleep was short — prioritise recovery movement over high intensity.';
+    } else if (rhr < 62 && sleep >= 7) {
+      note = 'Recovery looks solid — a strength or interval session fits well today.';
+      if (age < 50) move = 'Strength circuit + short cardio';
+    } else {
+      note = 'Targets are tuned from your age (' + age + '), activity level, and recent vitals.';
+    }
+
+    cals = Math.max(180, Math.min(650, Math.round(cals + (weight - 60) * 2.2)));
+    if (goalsOnboard.steps && goalsOnboard.steps > steps) steps = goalsOnboard.steps;
+    return { age, steps, cals, move, intensity, note, weight, rhr, sleep };
+  }
+
+  function pct(n, d) { return Math.min(100, Math.round((n / Math.max(1, d)) * 100)); }
+
+  function renderGuide(g) {
+    document.getElementById('guide-basis').textContent =
+      'Age ' + g.age + ' · resting HR ' + g.rhr + ' bpm · sleep ' + g.sleep + 'h · ' + (profile.activity || 'Lightly active');
+    document.getElementById('t-steps').textContent = g.steps.toLocaleString();
+    document.getElementById('t-cals').textContent = g.cals + ' kcal';
+    document.getElementById('t-move').textContent = g.move;
+    document.getElementById('t-intensity').textContent = g.intensity;
+    document.getElementById('guide-note').textContent = g.note;
+    document.getElementById('p-steps-lbl').textContent = today.steps.toLocaleString() + ' / ' + g.steps.toLocaleString();
+    document.getElementById('p-cals-lbl').textContent = today.cals + ' / ' + g.cals + ' kcal';
+    document.getElementById('p-steps-bar').style.width = pct(today.steps, g.steps) + '%';
+    document.getElementById('p-cals-bar').style.width = pct(today.cals, g.cals) + '%';
+    document.getElementById('p-mins').textContent = today.mins;
+
+    const day = new Date().toISOString().slice(0, 10);
+    if (today.steps >= g.steps) {
+      Tracto.celebrate({
+        key: 'steps-' + day,
+        title: 'Step goal complete!',
+        message: 'You hit ' + g.steps.toLocaleString() + ' steps today. Movement unlocked.',
+      });
+    }
+  }
+
+  const ACT_WEEK = [
+    { d: 'Mon', v: 8200 }, { d: 'Tue', v: 9100 }, { d: 'Wed', v: 6400 },
+    { d: 'Thu', v: 10200 }, { d: 'Fri', v: 7800 }, { d: 'Sat', v: 11500 }, { d: 'Sun', v: 6420 },
+  ];
+  const ACT_MONTH = [
+    { d: 'W1', v: 52000 }, { d: 'W2', v: 54800 }, { d: 'W3', v: 50100 }, { d: 'W4', v: 59600 },
+  ];
+
+  function renderActBars(data, meta) {
+    const max = Math.max(...data.map((x) => x.v));
+    document.getElementById('act-bars').innerHTML = data.map((x) => {
+      const h = Math.round((x.v / max) * 100);
+      const label = x.v >= 1000 ? (Math.round(x.v / 100) / 10) + 'k' : String(x.v);
+      return '<div class="bar-col"><div class="bar-col-fill teal" style="height:' + h + '%"></div><span class="bar-col-val">' + label + '</span><span class="bar-col-lbl">' + x.d + '</span></div>';
+    }).join('');
+    document.getElementById('act-chart-meta').textContent = meta;
+  }
+
+  let weightLog = Tracto.storageGet('tracto_weight_log', [
+    { week: 'W1', kg: 63.2 }, { week: 'W2', kg: 62.8 }, { week: 'W3', kg: 62.4 }, { week: 'W4', kg: 62.0 },
+  ]);
+  let weightTarget = Tracto.storageGet('tracto_weight_target', 58);
+
+  function renderWeight() {
+    const cur = weightLog[weightLog.length - 1].kg;
+    const prev = weightLog.length > 1 ? weightLog[weightLog.length - 2].kg : cur;
+    const delta = +(cur - prev).toFixed(1);
+    document.getElementById('w-current').textContent = cur.toFixed(1) + ' kg';
+    document.getElementById('w-target').textContent = weightTarget.toFixed(1) + ' kg';
+    document.getElementById('w-delta').textContent = (delta > 0 ? '+' : '') + delta + ' kg';
+    document.getElementById('w-delta').style.color = delta <= 0 ? 'var(--pulse-teal)' : 'var(--bio-amber)';
+    const max = Math.max(...weightLog.map((w) => w.kg), weightTarget) + 0.5;
+    const min = Math.min(...weightLog.map((w) => w.kg), weightTarget) - 0.5;
+    document.getElementById('weight-spark').innerHTML = weightLog.map((w) => {
+      const h = Math.round(((w.kg - min) / (max - min)) * 100);
+      return '<div class="bar-col"><div class="bar-col-fill vio" style="height:' + h + '%"></div><span class="bar-col-lbl">' + w.week + '</span></div>';
+    }).join('');
+    if (cur <= weightTarget) {
+      Tracto.celebrate({
+        key: 'weight-target',
+        title: 'Target weight reached!',
+        message: 'You’re at ' + cur.toFixed(1) + ' kg — your goal of ' + weightTarget.toFixed(1) + ' kg. Celebrate this milestone.',
+      });
+    }
+  }
+
+  function canAccess(videoLevel) {
+    return PLAN_RANK[plan] >= PLAN_RANK[videoLevel];
+  }
+
+  function renderYt() {
+    document.getElementById('yt-status').textContent = ytLinked
+      ? 'Connected as sruthi.demo · placeholder workouts are ready to play.'
+      : 'Link your YouTube account to play trainer-suggested workout videos here.';
+    document.getElementById('btn-yt-link').hidden = ytLinked;
+    document.getElementById('btn-yt-unlink').hidden = !ytLinked;
+    document.getElementById('yt-card').classList.toggle('is-linked', ytLinked);
+  }
+
+  function renderVideos() {
+    const grid = document.getElementById('video-grid');
+    grid.innerHTML = VIDEOS.map((v) => {
+      const planLocked = !canAccess(v.level);
+      const needYt = !ytLinked;
+      const locked = planLocked || needYt;
+      let lockLabel = '';
+      if (needYt) lockLabel = 'Link YouTube';
+      else if (planLocked) lockLabel = v.level + '+';
+      return (
+        '<button type="button" class="video-card' + (locked ? ' locked' : '') + '" data-video="' + v.id + '" data-locked="' + locked + '" data-need-yt="' + needYt + '" data-plan-locked="' + planLocked + '">' +
+          '<div class="video-thumb yt-thumb" aria-hidden="true">' +
+            '<span class="yt-badge">▶</span>' +
+            (locked ? '<span class="lock-chip">' + lockLabel + '</span>' : '<span class="play">▶</span>') +
+            '<span class="dur">' + v.dur + '</span>' +
+          '</div>' +
+          '<div class="video-body">' +
+            '<span class="pill muted">' + v.tag + '</span>' +
+            '<h4>' + v.title + '</h4>' +
+            '<p>' + v.channel + ' · ' + v.coach + '</p>' +
+          '</div>' +
+        '</button>'
+      );
+    }).join('');
+
+    grid.querySelectorAll('[data-video]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const v = VIDEOS.find((x) => x.id === btn.getAttribute('data-video'));
+        if (!v) return;
+        if (btn.getAttribute('data-need-yt') === 'true') {
+          Tracto.toast('Link YouTube to watch this workout');
+          document.getElementById('yt-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        if (btn.getAttribute('data-plan-locked') === 'true') {
+          Tracto.toast('Upgrade your plan in Profile to unlock this video');
+          return;
+        }
+        Tracto.openModal({
+          title: v.title,
+          subtitle: v.channel + ' · ' + v.dur + ' · placeholder',
+          wide: true,
+          content:
+            '<div class="yt-embed-placeholder" role="img" aria-label="Placeholder YouTube player">' +
+              '<div class="yt-embed-bar"><span></span><span></span><span></span></div>' +
+              '<div class="yt-embed-stage"><button type="button" class="yt-big-play" tabindex="-1" aria-hidden="true">▶</button></div>' +
+              '<div class="yt-embed-meta"><strong>' + v.title + '</strong><span>' + v.channel + ' · Sample placeholder · not a live stream</span></div>' +
+            '</div>' +
+            '<p class="card-meta" style="margin:.85rem 0 1rem">Prototype only — production would stream via your linked YouTube account.</p>' +
+            '<div class="modal-actions"><button type="button" class="btn btn-teal" data-close>Close</button></div>',
+          onOpen(modal, close) {
+            modal.querySelector('[data-close]').onclick = close;
+          }
+        });
+      });
+    });
+  }
+
+  function renderCoachHint() {
+    document.getElementById('coach-lock-hint').hidden = PLAN_RANK[plan] >= 1;
+  }
+
+  let walkTimer = null;
+  let walkSeconds = 0;
+  let walkSteps = 0;
+
+  function formatTime(s) {
+    return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  }
+
+  function startWalk() {
+    document.getElementById('walk-panel').hidden = false;
+    walkSeconds = 0;
+    walkSteps = 0;
+    document.getElementById('walk-timer').textContent = '00:00';
+    document.getElementById('walk-steps').textContent = '0';
+    clearInterval(walkTimer);
+    walkTimer = setInterval(() => {
+      walkSeconds += 1;
+      walkSteps += 8 + Math.floor(Math.random() * 6);
+      document.getElementById('walk-timer').textContent = formatTime(walkSeconds);
+      document.getElementById('walk-steps').textContent = walkSteps.toLocaleString();
+    }, 1000);
+    Tracto.toast('Activity started');
+  }
+
+  function stopWalk() {
+    clearInterval(walkTimer);
+    walkTimer = null;
+    document.getElementById('walk-panel').hidden = true;
+    today.steps += walkSteps;
+    today.cals += Math.round(walkSteps * 0.04);
+    today.mins += Math.max(1, Math.round(walkSeconds / 60));
+    Tracto.storageSet('tracto_activity_today', today);
+    renderGuide(personalise());
+    Tracto.toast('Logged · ' + walkSteps + ' sample steps');
+  }
+
+  function openCoach(kind) {
+    if (PLAN_RANK[plan] < 1) {
+      Tracto.toast('Upgrade in Profile for coach access');
+      return;
+    }
+    const title = kind === 'nutrition' ? 'Nutrition guidance' : 'Fitness coach consult';
+    const sub = kind === 'nutrition'
+      ? 'A trainer will help align meals with your calorie burn targets.'
+      : 'Match workouts to your age, vitals, and membership level.';
+    Tracto.openModal({
+      title: title,
+      subtitle: sub,
+      content:
+        '<div class="form-group"><label for="c-topic">What do you need help with?</label>' +
+        '<select class="form-select" id="c-topic">' +
+        (kind === 'nutrition'
+          ? '<option>Meal timing around workouts</option><option>Protein targets</option><option>Hydration plan</option>'
+          : '<option>Weekly movement plan</option><option>Form check</option><option>Recovery &amp; intensity</option>') +
+        '</select></div>' +
+        '<div class="form-group"><label for="c-when">Preferred slot</label>' +
+        '<select class="form-select" id="c-when"><option>Tomorrow morning</option><option>Tomorrow evening</option><option>This weekend</option></select></div>' +
+        '<div class="modal-actions"><button type="button" class="btn btn-teal" id="c-book">Request session</button>' +
+        '<button type="button" class="btn btn-ghost" data-close>Cancel</button></div>',
+      onOpen(modal, close) {
+        modal.querySelector('[data-close]').onclick = close;
+        modal.querySelector('#c-book').onclick = () => {
+          Tracto.toast('Consultation requested — a coach will confirm shortly');
+          close();
+        };
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const onboard = Tracto.storageGet('tracto_onboard', null);
+    if (onboard) {
+      if (onboard.dob) profile.dob = onboard.dob;
+      if (onboard.height) profile.height = onboard.height;
+      if (onboard.weight) profile.weight = onboard.weight;
+      if (onboard.activity) profile.activity = onboard.activity;
+      Tracto.storageSet('tracto_profile', profile);
+    }
+
+    plan = Tracto.storageGet('tracto_plan', 'basic');
+    renderGuide(personalise());
+    renderYt();
+    renderVideos();
+    renderCoachHint();
+    renderActBars(ACT_WEEK, 'Steps this week · avg 7,840');
+    renderWeight();
+
+    document.querySelectorAll('[data-act-range]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-act-range]').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (btn.dataset.actRange === 'month') renderActBars(ACT_MONTH, 'Steps by week · avg 54,125');
+        else renderActBars(ACT_WEEK, 'Steps this week · avg 7,840');
+      });
+    });
+
+    document.getElementById('btn-log-weight').addEventListener('click', () => {
+      const cur = weightLog[weightLog.length - 1].kg;
+      Tracto.openModal({
+        title: 'Weekly weight check-in',
+        subtitle: 'End-of-week log',
+        content:
+          '<div class="form-group"><label for="wk-kg">Weight (kg)</label><input class="form-input" id="wk-kg" type="number" step="0.1" value="' + cur + '"></div>' +
+          '<div class="form-group"><label for="wk-target">Target weight (kg)</label><input class="form-input" id="wk-target" type="number" step="0.1" value="' + weightTarget + '"></div>' +
+          '<div class="modal-actions"><button type="button" class="btn btn-teal" id="save-w">Save check-in</button>' +
+          '<button type="button" class="btn btn-ghost" data-close>Cancel</button></div>',
+        onOpen(modal, close) {
+          modal.querySelector('[data-close]').onclick = close;
+          modal.querySelector('#save-w').onclick = () => {
+            const kg = +modal.querySelector('#wk-kg').value || cur;
+            weightTarget = +modal.querySelector('#wk-target').value || weightTarget;
+            weightLog.push({ week: 'W' + (weightLog.length + 1), kg: kg });
+            if (weightLog.length > 8) weightLog = weightLog.slice(-8);
+            Tracto.storageSet('tracto_weight_log', weightLog);
+            Tracto.storageSet('tracto_weight_target', weightTarget);
+            renderWeight();
+            Tracto.toast('Weight logged · ' + kg.toFixed(1) + ' kg');
+            close();
+          };
+        }
+      });
+    });
+
+    document.getElementById('btn-yt-link').addEventListener('click', () => {
+      Tracto.openModal({
+        title: 'Link YouTube',
+        subtitle: 'Prototype connect — no real Google OAuth',
+        content:
+          '<p class="card-meta" style="margin-bottom:1rem">Allow Tracto to open trainer workout playlists in a YouTube-style player.</p>' +
+          '<div class="modal-actions"><button type="button" class="btn btn-teal" id="yt-confirm">Continue with YouTube</button>' +
+          '<button type="button" class="btn btn-ghost" data-close>Cancel</button></div>',
+        onOpen(modal, close) {
+          modal.querySelector('[data-close]').onclick = close;
+          modal.querySelector('#yt-confirm').onclick = () => {
+            ytLinked = true;
+            Tracto.storageSet('tracto_youtube', { linked: true, handle: 'sruthi.demo', at: Date.now() });
+            renderYt();
+            renderVideos();
+            Tracto.toast('YouTube linked');
+            close();
+          };
+        }
+      });
+    });
+
+    document.getElementById('btn-yt-unlink').addEventListener('click', () => {
+      ytLinked = false;
+      Tracto.storageSet('tracto_youtube', null);
+      renderYt();
+      renderVideos();
+      Tracto.toast('YouTube disconnected');
+    });
+
+    document.getElementById('btn-book-coach').addEventListener('click', () => openCoach('fitness'));
+    document.getElementById('btn-nutrition-coach').addEventListener('click', () => openCoach('nutrition'));
+    document.getElementById('btn-start-walk').addEventListener('click', startWalk);
+    document.getElementById('btn-stop-walk').addEventListener('click', stopWalk);
+    document.getElementById('btn-log-activity').addEventListener('click', () => {
+      Tracto.openModal({
+        title: 'Log activity',
+        subtitle: 'Add a session toward today’s targets',
+        content:
+          '<div class="form-group"><label for="la-type">Type</label><select class="form-select" id="la-type"><option>Walking</option><option>Running</option><option>Strength</option><option>Yoga / mobility</option><option>Cycling</option></select></div>' +
+          '<div class="form-row"><div class="form-group"><label for="la-min">Minutes</label><input class="form-input" id="la-min" type="number" value="20"></div>' +
+          '<div class="form-group"><label for="la-cal">Calories</label><input class="form-input" id="la-cal" type="number" value="120"></div></div>' +
+          '<div class="modal-actions"><button type="button" class="btn btn-teal" id="la-save">Save</button>' +
+          '<button type="button" class="btn btn-ghost" data-close>Cancel</button></div>',
+        onOpen(modal, close) {
+          modal.querySelector('[data-close]').onclick = close;
+          modal.querySelector('#la-save').onclick = () => {
+            const mins = +modal.querySelector('#la-min').value || 0;
+            const cals = +modal.querySelector('#la-cal').value || 0;
+            today.mins += mins;
+            today.cals += cals;
+            today.steps += Math.round(mins * 90);
+            Tracto.storageSet('tracto_activity_today', today);
+            renderGuide(personalise());
+            Tracto.toast('Activity logged');
+            close();
+          };
+        }
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Onboarding — Tracto Healthcare</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body class="app-body" data-page="onboarding">
+<div class="onboard-page">
+  <a href="landing.html" class="logo">tracto</a>
+
+  <div class="steps-indicator" aria-label="Onboarding progress">
+    <div class="step-dot active" data-dot="1"></div>
+    <div class="step-line" data-line="1"></div>
+    <div class="step-dot" data-dot="2"></div>
+    <div class="step-line" data-line="2"></div>
+    <div class="step-dot" data-dot="3"></div>
+  </div>
+
+  <!-- Step 1 -->
+  <section id="step-1" class="onboard-step">
+    <h1 style="font-size:clamp(1.5rem,4vw,2rem);font-weight:700;letter-spacing:-.02em;margin-bottom:.75rem">Your health, made easier to understand</h1>
+    <p style="color:var(--text-secondary);font-size:.95rem;line-height:1.6">Tracto brings your activity, heart health, nutrition and daily habits into one clear view.</p>
+    <ul class="feature-list">
+      <li>Track daily health metrics</li>
+      <li>Discover patterns and insights</li>
+      <li>Set realistic personal goals</li>
+      <li>Share reports with your doctor</li>
+    </ul>
+    <div class="onboard-actions">
+      <button type="button" class="btn btn-grad btn-block" data-next>Get started</button>
+      <button type="button" class="btn btn-ghost btn-block" id="btn-existing">I already have an account</button>
+    </div>
+    <p class="privacy-note">Your health data stays private and is only shared when you choose to share it.</p>
+  </section>
+
+  <!-- Step 2 -->
+  <section id="step-2" class="onboard-step" hidden>
+    <h1 style="font-size:clamp(1.4rem,3.5vw,1.75rem);font-weight:700;margin-bottom:.5rem">What would you like to focus on?</h1>
+    <p style="color:var(--text-secondary);font-size:.9rem;margin-bottom:1.25rem">Choose one or more goals. You can change these later.</p>
+    <div class="chip-grid" id="goal-grid">
+      <button type="button" class="chip-card" data-goal="fitness">Improve fitness</button>
+      <button type="button" class="chip-card" data-goal="weight">Lose weight</button>
+      <button type="button" class="chip-card" data-goal="eat">Eat healthier</button>
+      <button type="button" class="chip-card" data-goal="sleep">Sleep better</button>
+      <button type="button" class="chip-card" data-goal="heart">Monitor heart health</button>
+      <button type="button" class="chip-card" data-goal="stress">Manage stress</button>
+      <button type="button" class="chip-card" data-goal="consistency">Build consistency</button>
+    </div>
+    <div class="divider"></div>
+    <div class="form-row">
+      <div class="form-group"><label for="dob">Date of birth</label><input class="form-input" type="date" id="dob" value="1998-06-15"></div>
+      <div class="form-group"><label for="units">Preferred units</label>
+        <select class="form-select" id="units"><option>Metric (kg, cm)</option><option>Imperial (lb, ft)</option></select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label for="height">Height (cm)</label><input class="form-input" type="number" id="height" value="165"></div>
+      <div class="form-group"><label for="weight">Weight (kg)</label><input class="form-input" type="number" id="weight" value="62" step="0.1"></div>
+    </div>
+    <div class="form-group">
+      <label for="activity">Activity level</label>
+      <select class="form-select" id="activity">
+        <option>Sedentary</option>
+        <option selected>Lightly active</option>
+        <option>Moderately active</option>
+        <option>Very active</option>
+      </select>
+    </div>
+    <p class="form-hint">We use this information to personalise your goals and recommendations.</p>
+    <p id="goal-error" class="form-hint" style="color:var(--danger-red);display:none;margin-top:.75rem">Please select at least one goal to continue.</p>
+    <div class="modal-actions" style="margin-top:1.5rem">
+      <button type="button" class="btn btn-ghost" data-prev>Previous</button>
+      <button type="button" class="btn btn-grad" data-next>Continue</button>
+    </div>
+  </section>
+
+  <!-- Step 3 -->
+  <section id="step-3" class="onboard-step" hidden>
+    <div id="connect-view">
+      <h1 style="font-size:clamp(1.4rem,3.5vw,1.75rem);font-weight:700;margin-bottom:.5rem">Bring your health data together</h1>
+      <p style="color:var(--text-secondary);font-size:.9rem;margin-bottom:1.25rem">Connect a device or continue with manual tracking.</p>
+      <div id="device-cards" class="device-list">
+        <button type="button" class="check-card" data-device="apple">
+          <span class="device-ico device-ico--apple" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3.5c-.8.1-1.8.6-2.4 1.3-.5.6-1 1.6-.8 2.5 1 .1 1.9-.4 2.5-1.1.6-.7 1-1.7.7-2.7zM19.2 12c-.1-2 1.6-3 1.7-3.1-1-1.4-2.5-1.6-3-1.7-1.3-.1-2.5.8-3.1.8-.7 0-1.7-.7-2.8-.7-1.4 0-2.7.8-3.5 2.1-1.5 2.6-.4 6.4 1.1 8.5.7 1 1.6 2.2 2.7 2.1 1.1 0 1.5-.7 2.8-.7s1.6.7 2.8.7c1.2 0 1.9-1 2.6-2 .8-1.2 1.1-2.3 1.1-2.4-.1 0-2.2-.9-2.4-3.6z"/></svg>
+          </span>
+          <div class="check-copy"><div class="title">Apple Health</div><div class="desc">iPhone &amp; Apple Watch</div></div>
+          <input type="radio" name="device" tabindex="-1">
+        </button>
+        <button type="button" class="check-card" data-device="google">
+          <span class="device-ico device-ico--google" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </span>
+          <div class="check-copy"><div class="title">Google Health Connect</div><div class="desc">Android devices</div></div>
+          <input type="radio" name="device" tabindex="-1">
+        </button>
+        <button type="button" class="check-card" data-device="wearable">
+          <span class="device-ico device-ico--band" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><rect x="8" y="3" width="8" height="18" rx="4" stroke="currentColor" stroke-width="1.8"/><rect x="10" y="7" width="4" height="6" rx="1" fill="currentColor" opacity=".85"/></svg>
+          </span>
+          <div class="check-copy"><div class="title">Fitness band or watch</div><div class="desc">Fitbit, Garmin, and other wearables</div></div>
+          <input type="radio" name="device" tabindex="-1">
+        </button>
+      </div>
+      <div class="card" style="margin:1.25rem 0">
+        <div class="card-title">Permissions</div>
+        <div class="toggle-row"><span>Heart rate</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+        <div class="toggle-row"><span>Steps and activity</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+        <div class="toggle-row"><span>Sleep</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+        <div class="toggle-row"><span>Workouts</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+        <div class="toggle-row"><span>Weight</span><label class="toggle"><input type="checkbox"><span class="slider"></span></label></div>
+      </div>
+      <p class="form-hint" style="margin-bottom:1rem">Prototype only — connecting will not request real health permissions.</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-prev>Previous</button>
+        <button type="button" class="btn btn-ghost" id="btn-later">Set up later</button>
+        <button type="button" class="btn btn-grad" id="btn-connect">Connect device</button>
+      </div>
+    </div>
+
+    <div id="complete-view" class="success-state" hidden>
+      <div class="check">✓</div>
+      <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:.5rem">You’re ready to begin</h1>
+      <p style="color:var(--text-secondary);margin-bottom:1.5rem;line-height:1.55">Your personalised dashboard is ready. Start by exploring today’s health overview.</p>
+      <a href="dashboard.html" class="btn btn-grad btn-block">Go to dashboard</a>
+    </div>
+  </section>
+</div>
+
+<script src="app-shell.js"></script>
+<script>
+(function () {
+  let step = 1;
+  const state = Tracto.storageGet('tracto_onboard', {
+    goals: [], dob: '1998-06-15', height: 165, weight: 62,
+    activity: 'Lightly active', units: 'Metric (kg, cm)', device: null
+  });
+
+  function showStep(n) {
+    step = n;
+    document.querySelectorAll('.onboard-step').forEach((el, i) => {
+      el.hidden = i + 1 !== n;
+    });
+    document.querySelectorAll('[data-dot]').forEach((d) => {
+      const num = +d.dataset.dot;
+      d.classList.toggle('active', num === n);
+      d.classList.toggle('done', num < n);
+    });
+    document.querySelectorAll('[data-line]').forEach((l) => {
+      l.classList.toggle('done', +l.dataset.line < n);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function saveFields() {
+    state.dob = document.getElementById('dob').value;
+    state.height = +document.getElementById('height').value;
+    state.weight = +document.getElementById('weight').value;
+    state.activity = document.getElementById('activity').value;
+    state.units = document.getElementById('units').value;
+    state.goals = [...document.querySelectorAll('.chip-card.selected')].map((c) => c.dataset.goal);
+    Tracto.storageSet('tracto_onboard', state);
+  }
+
+  function restore() {
+    document.getElementById('dob').value = state.dob;
+    document.getElementById('height').value = state.height;
+    document.getElementById('weight').value = state.weight;
+    document.getElementById('activity').value = state.activity;
+    document.getElementById('units').value = state.units;
+    state.goals.forEach((g) => {
+      const el = document.querySelector('[data-goal="' + g + '"]');
+      if (el) el.classList.add('selected');
+    });
+  }
+
+  function complete(connected) {
+    document.getElementById('connect-view').hidden = true;
+    document.getElementById('complete-view').hidden = false;
+    state.completed = true;
+    state.deviceConnected = !!connected;
+    Tracto.storageSet('tracto_onboard', state);
+    if (connected) Tracto.toast('Device connected (prototype)');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    restore();
+
+    document.querySelectorAll('[data-goal]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('selected');
+        document.getElementById('goal-error').style.display = 'none';
+      });
+    });
+
+    document.querySelectorAll('[data-device]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-device]').forEach((b) => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        btn.querySelector('input').checked = true;
+        state.device = btn.dataset.device;
+      });
+    });
+
+    document.querySelectorAll('[data-next]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        if (step === 1) { showStep(2); return; }
+        if (step === 2) {
+          saveFields();
+          if (!state.goals.length) {
+            document.getElementById('goal-error').style.display = 'block';
+            return;
+          }
+          showStep(3);
+        }
+      });
+    });
+
+    document.querySelectorAll('[data-prev]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        saveFields();
+        showStep(step - 1);
+      });
+    });
+
+    document.getElementById('btn-existing').addEventListener('click', () => {
+      window.location.href = 'dashboard.html';
+    });
+
+    document.getElementById('btn-connect').addEventListener('click', () => {
+      saveFields();
+      complete(true);
+    });
+
+    document.getElementById('btn-later').addEventListener('click', () => {
+      saveFields();
+      complete(false);
+    });
+  });
+})();
+</script>
+</body>
+</html>

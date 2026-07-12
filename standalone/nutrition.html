@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutrition — Tracto Healthcare</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body class="app-body" data-page="nutrition">
+<div class="app-shell" id="app-shell">
+  <main class="app-main">
+    <header class="page-header">
+      <div>
+        <h1>Nutrition</h1>
+        <p class="sub">Track what you eat and understand how it supports your goals.</p>
+      </div>
+    </header>
+
+    <div class="stack">
+      <!-- Calories -->
+      <section class="card">
+        <div class="score-hero">
+          <div class="ring-wrap" id="cal-ring"></div>
+          <div style="flex:1;min-width:180px">
+            <div class="card-title">Daily calories</div>
+            <div class="card-value"><span id="cal-eaten">1,420</span> <span class="unit">/ 1,900 kcal</span></div>
+            <p class="card-meta"><span id="cal-left">480</span> kcal remaining</p>
+            <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.85rem">
+              <button type="button" class="btn btn-teal btn-sm" id="btn-log-meal">+ Log meal</button>
+              <button type="button" class="btn btn-ghost btn-sm" id="btn-scan">Scan food</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Macros -->
+      <div class="grid-3" id="macro-cards">
+        <div class="card">
+          <div class="card-title">Protein</div>
+          <div class="card-value" style="font-size:1.25rem"><span data-macro="protein">68</span> <span class="unit">/ 95 g</span></div>
+          <p class="card-meta"><span data-remain="protein">27</span> g remaining</p>
+          <div class="bar-track" style="margin-top:.55rem"><div class="bar-fill" data-bar="protein" style="width:72%"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Carbohydrates</div>
+          <div class="card-value" style="font-size:1.25rem"><span data-macro="carbs">152</span> <span class="unit">/ 220 g</span></div>
+          <p class="card-meta"><span data-remain="carbs">68</span> g remaining</p>
+          <div class="bar-track" style="margin-top:.55rem"><div class="bar-fill amber" data-bar="carbs" style="width:69%"></div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Fats</div>
+          <div class="card-value" style="font-size:1.25rem"><span data-macro="fat">46</span> <span class="unit">/ 65 g</span></div>
+          <p class="card-meta"><span data-remain="fat">19</span> g remaining</p>
+          <div class="bar-track" style="margin-top:.55rem"><div class="bar-fill vio" data-bar="fat" style="width:71%"></div></div>
+        </div>
+      </div>
+
+      <!-- Meals -->
+      <section class="card">
+        <div class="card-title">Today’s meals</div>
+        <div id="meal-list"></div>
+      </section>
+
+      <!-- Water -->
+      <section class="card">
+        <div class="card-title">Water intake</div>
+        <div class="card-value" style="font-size:1.35rem"><span id="water-val">1.6</span> <span class="unit">/ 2.5 L</span></div>
+        <div class="water-glasses" id="water-glasses" role="group" aria-label="Water glasses"></div>
+        <button type="button" class="btn btn-outline-teal btn-sm" id="btn-water">+ 250 ml</button>
+      </section>
+
+      <!-- Insight -->
+      <section class="insight-card">
+        <h3>Nutrition insight</h3>
+        <p id="nutrition-insight">You are close to your carbohydrate target but still need 27 g of protein. Consider paneer, eggs, yoghurt or lentils with dinner.</p>
+        <button type="button" class="card-link" id="btn-meal-ideas">View meal ideas</button>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="app-shell.js"></script>
+<script>
+(function () {
+  const TARGETS = { kcal: 1900, protein: 95, carbs: 220, fat: 65 };
+  const WATER_TARGET = 2.5;
+  const GLASS = 0.25;
+
+  let meals = Tracto.storageGet('tracto_meals', [
+    { id: '1', type: 'Breakfast', time: '8:30 AM', name: 'Vegetable omelette and toast', kcal: 420, protein: 24, carbs: 38, fat: 18, img: 'omelette' },
+    { id: '2', type: 'Lunch', time: '1:20 PM', name: 'Paneer rice bowl', kcal: 610, protein: 28, carbs: 76, fat: 22, img: 'bowl' },
+    { id: '3', type: 'Snack', time: '4:45 PM', name: 'Apple and almonds', kcal: 190, protein: 6, carbs: 22, fat: 8, img: 'apple' },
+  ]);
+  let water = Tracto.storageGet('tracto_water', 1.6);
+  let dinnerLogged = meals.some((m) => m.type === 'Dinner');
+
+  const MEAL_IMGS = {
+    omelette: { emoji: '🍳', bg: 'linear-gradient(145deg,#3d2a1a,#1a1210)' },
+    bowl: { emoji: '🥗', bg: 'linear-gradient(145deg,#1a3d2e,#101a14)' },
+    apple: { emoji: '🍎', bg: 'linear-gradient(145deg,#3d1a22,#1a1012)' },
+    dinner: { emoji: '🍽️', bg: 'linear-gradient(145deg,#2a1a3d,#120e1a)' },
+    smoothie: { emoji: '🥤', bg: 'linear-gradient(145deg,#1a2a3d,#0e121a)' },
+    default: { emoji: '🍱', bg: 'linear-gradient(145deg,#1a2438,#0e121a)' },
+  };
+
+  function mealThumb(m) {
+    const key = m.img || (m.type === 'Dinner' ? 'dinner' : m.type === 'Snack' ? 'apple' : m.type === 'Lunch' ? 'bowl' : 'omelette');
+    const t = MEAL_IMGS[key] || MEAL_IMGS.default;
+    return '<div class="meal-thumb" style="background:' + t.bg + '" aria-hidden="true"><span>' + t.emoji + '</span></div>';
+  }
+
+  function checkCelebrations() {
+    const t = totals();
+    const day = new Date().toISOString().slice(0, 10);
+    if (t.kcal >= TARGETS.kcal) {
+      Tracto.celebrate({
+        key: 'kcal-' + day,
+        title: 'Calorie goal complete!',
+        message: 'You’ve hit today’s ' + TARGETS.kcal.toLocaleString() + ' kcal target. Fuel well-earned.',
+      });
+    }
+    if (water >= WATER_TARGET) {
+      Tracto.celebrate({
+        key: 'water-' + day,
+        title: 'Hydration goal crushed!',
+        message: '2.5 L water logged — your body will thank you.',
+      });
+    }
+    const act = Tracto.storageGet('tracto_activity_today', { steps: 0 });
+    const stepGoal = (Tracto.storageGet('tracto_goals', { steps: 10000 }).steps) || 10000;
+    if (act.steps >= stepGoal && t.kcal >= TARGETS.kcal * 0.9 && water >= WATER_TARGET * 0.9) {
+      Tracto.celebrate({
+        key: 'trio-' + day,
+        title: 'Triple win today!',
+        message: 'Calories, water, and activity are on track. That’s a full wellness day.',
+      });
+    }
+  }
+
+  function totals() {
+    return meals.reduce((a, m) => ({
+      kcal: a.kcal + (+m.kcal || 0),
+      protein: a.protein + (+m.protein || 0),
+      carbs: a.carbs + (+m.carbs || 0),
+      fat: a.fat + (+m.fat || 0),
+    }), { kcal: 0, protein: 0, carbs: 0, fat: 0 });
+  }
+
+  function persist() {
+    Tracto.storageSet('tracto_meals', meals);
+    Tracto.storageSet('tracto_water', water);
+  }
+
+  function updateTotalsUI() {
+    const t = totals();
+    document.getElementById('cal-eaten').textContent = t.kcal.toLocaleString();
+    document.getElementById('cal-left').textContent = Math.max(0, TARGETS.kcal - t.kcal);
+    const pct = Math.min(100, (t.kcal / TARGETS.kcal) * 100);
+    document.getElementById('cal-ring').innerHTML =
+      Tracto.ringSVG(pct, 'lg', 'calRing') +
+      '<div class="ring-center"><span class="val">' + Math.round(pct) + '%</span><span class="lbl">of goal</span></div>';
+
+    ['protein', 'carbs', 'fat'].forEach((k) => {
+      document.querySelector('[data-macro="' + k + '"]').textContent = t[k];
+      document.querySelector('[data-remain="' + k + '"]').textContent = Math.max(0, TARGETS[k] - t[k]);
+      document.querySelector('[data-bar="' + k + '"]').style.width = Math.min(100, (t[k] / TARGETS[k]) * 100) + '%';
+    });
+
+    const needP = Math.max(0, TARGETS.protein - t.protein);
+    document.getElementById('nutrition-insight').textContent =
+      needP > 0
+        ? 'You are close to your carbohydrate target but still need ' + needP + ' g of protein. Consider paneer, eggs, yoghurt or lentils with dinner.'
+        : 'Great protein intake today. Keep balancing carbs and fats with your remaining meals.';
+    checkCelebrations();
+  }
+
+  function renderMeals() {
+    const list = document.getElementById('meal-list');
+    let html = meals.map((m) =>
+      '<div class="meal-item" data-id="' + m.id + '">' +
+      mealThumb(m) +
+      '<div class="meal-body">' +
+      '<div class="meal-type">' + m.type + (m.time ? ' · ' + m.time : '') + '</div>' +
+      '<div class="meal-name">' + m.name + '</div>' +
+      '<div class="meal-macros">Protein ' + m.protein + ' g · Carbs ' + m.carbs + ' g · Fat ' + m.fat + ' g</div>' +
+      '</div>' +
+      '<div class="meal-kcal">' + m.kcal + ' kcal</div>' +
+      '<div class="meal-actions">' +
+      '<button type="button" class="icon-btn" data-edit="' + m.id + '" aria-label="Edit meal" style="width:36px;height:36px">' +
+      '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20h4l10-10-4-4L4 16v4zM14 6l4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>' +
+      '<button type="button" class="icon-btn" data-del="' + m.id + '" aria-label="Delete meal" style="width:36px;height:36px">' +
+      '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 7h12M10 7V5h4v2m-5 3v8m4-8v8M8 7l1 12h6l1-12" stroke-linecap="round"/></svg></button>' +
+      '</div></div>'
+    ).join('');
+
+    if (!meals.some((m) => m.type === 'Dinner')) {
+      html += '<div class="meal-empty">Dinner · Not logged yet<br>' +
+        '<button type="button" class="btn btn-teal btn-sm" id="btn-add-dinner" style="margin-top:.75rem">+ Add dinner</button></div>';
+    }
+    list.innerHTML = html || '<div class="meal-empty">No meals logged yet.</div>';
+
+    list.querySelectorAll('[data-edit]').forEach((b) => b.addEventListener('click', () => openMealForm(b.dataset.edit)));
+    list.querySelectorAll('[data-del]').forEach((b) => b.addEventListener('click', () => confirmDelete(b.dataset.del)));
+    const addDinner = document.getElementById('btn-add-dinner');
+    if (addDinner) addDinner.addEventListener('click', () => openMealForm(null, 'Dinner'));
+  }
+
+  function openMealForm(id, presetType) {
+    const meal = id ? meals.find((m) => m.id === id) : null;
+    const isEdit = !!meal;
+    Tracto.openModal({
+      title: isEdit ? 'Edit meal' : 'Add meal',
+      content:
+        '<div class="form-group"><label for="mtype">Meal</label>' +
+        '<select class="form-select" id="mtype">' +
+        ['Breakfast','Lunch','Snack','Dinner'].map((t) =>
+          '<option' + ((meal ? meal.type : presetType) === t ? ' selected' : '') + '>' + t + '</option>'
+        ).join('') + '</select></div>' +
+        '<div class="form-group"><label for="mname">Name</label><input class="form-input" id="mname" value="' + (meal ? meal.name : '') + '" placeholder="e.g. Grilled fish and salad"></div>' +
+        '<div class="form-group"><label>Photo</label><div class="meal-pick" id="meal-pick">' +
+        Object.keys(MEAL_IMGS).filter((k) => k !== 'default').map((k) =>
+          '<button type="button" class="meal-pick-opt' + ((meal && meal.img) === k ? ' selected' : '') + '" data-img="' + k + '" style="background:' + MEAL_IMGS[k].bg + '">' + MEAL_IMGS[k].emoji + '</button>'
+        ).join('') + '</div></div>' +
+        '<div class="form-row"><div class="form-group"><label for="mkcal">Calories</label><input class="form-input" id="mkcal" type="number" value="' + (meal ? meal.kcal : 450) + '"></div>' +
+        '<div class="form-group"><label for="mtime">Time</label><input class="form-input" id="mtime" value="' + (meal ? meal.time || '' : '7:30 PM') + '"></div></div>' +
+        '<div class="form-row"><div class="form-group"><label for="mpro">Protein (g)</label><input class="form-input" id="mpro" type="number" value="' + (meal ? meal.protein : 25) + '"></div>' +
+        '<div class="form-group"><label for="mcar">Carbs (g)</label><input class="form-input" id="mcar" type="number" value="' + (meal ? meal.carbs : 40) + '"></div></div>' +
+        '<div class="form-group"><label for="mfat">Fat (g)</label><input class="form-input" id="mfat" type="number" value="' + (meal ? meal.fat : 15) + '"></div>' +
+        '<div class="modal-actions"><button type="button" class="btn btn-teal" id="save-meal">Save</button>' +
+        '<button type="button" class="btn btn-ghost" data-close>Cancel</button></div>',
+      onOpen(modal, close) {
+        let picked = (meal && meal.img) || 'dinner';
+        modal.querySelectorAll('[data-img]').forEach((b) => {
+          b.addEventListener('click', () => {
+            modal.querySelectorAll('[data-img]').forEach((x) => x.classList.remove('selected'));
+            b.classList.add('selected');
+            picked = b.dataset.img;
+          });
+        });
+        modal.querySelector('[data-close]').onclick = close;
+        modal.querySelector('#save-meal').onclick = () => {
+          const data = {
+            id: meal ? meal.id : String(Date.now()),
+            type: modal.querySelector('#mtype').value,
+            name: modal.querySelector('#mname').value.trim() || 'Untitled meal',
+            time: modal.querySelector('#mtime').value.trim(),
+            kcal: +modal.querySelector('#mkcal').value || 0,
+            protein: +modal.querySelector('#mpro').value || 0,
+            carbs: +modal.querySelector('#mcar').value || 0,
+            fat: +modal.querySelector('#mfat').value || 0,
+            img: picked,
+          };
+          if (isEdit) meals = meals.map((m) => m.id === id ? data : m);
+          else meals.push(data);
+          persist();
+          renderMeals();
+          updateTotalsUI();
+          Tracto.toast(isEdit ? 'Meal updated' : 'Meal added');
+          close();
+        };
+      }
+    });
+  }
+
+  function confirmDelete(id) {
+    const meal = meals.find((m) => m.id === id);
+    Tracto.openModal({
+      title: 'Delete meal?',
+      content: '<p style="font-size:.9rem;color:var(--text-secondary)">Remove “' + (meal && meal.name) + '” from today’s log?</p>' +
+        '<div class="modal-actions"><button type="button" class="btn btn-teal" id="confirm-del">Delete</button>' +
+        '<button type="button" class="btn btn-ghost" data-close>Cancel</button></div>',
+      onOpen(modal, close) {
+        modal.querySelector('[data-close]').onclick = close;
+        modal.querySelector('#confirm-del').onclick = () => {
+          meals = meals.filter((m) => m.id !== id);
+          persist();
+          renderMeals();
+          updateTotalsUI();
+          Tracto.toast('Meal deleted');
+          close();
+        };
+      }
+    });
+  }
+
+  function renderWater() {
+    const glasses = Math.round(WATER_TARGET / GLASS);
+    const filled = Math.min(glasses, Math.round(water / GLASS));
+    document.getElementById('water-val').textContent = water.toFixed(1);
+    const host = document.getElementById('water-glasses');
+    host.innerHTML = '';
+    for (let i = 0; i < glasses; i++) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'water-glass' + (i < filled ? ' filled' : '');
+      btn.setAttribute('aria-label', 'Glass ' + (i + 1) + (i < filled ? ', filled' : ''));
+      btn.addEventListener('click', () => {
+        water = Math.min(WATER_TARGET, (i + 1) * GLASS);
+        persist();
+        renderWater();
+        Tracto.toast('Water updated · ' + water.toFixed(1) + ' L');
+        checkCelebrations();
+      });
+      host.appendChild(btn);
+    }
+  }
+
+  function addWater() {
+    if (water >= WATER_TARGET) {
+      Tracto.toast('Daily water goal reached');
+      return;
+    }
+    water = Math.min(WATER_TARGET, +(water + GLASS).toFixed(2));
+    persist();
+    renderWater();
+    Tracto.toast('Water logged · +250 ml');
+    checkCelebrations();
+  }
+
+  function openScanFlow() {
+    let step = 1;
+    let portion = 1;
+    const food = { name: 'Paneer wrap', kcal: 380, protein: 22, carbs: 36, fat: 16 };
+
+    function render(modal, close) {
+      const body = modal.querySelector('.modal-body');
+      if (step === 1) {
+        body.innerHTML =
+          '<p style="font-size:.9rem;font-weight:600;margin-bottom:.35rem">Point your camera at your meal</p>' +
+          '<p style="font-size:.8rem;color:var(--text-secondary);line-height:1.5;margin-bottom:1rem">We’ll estimate the food items, portion size and nutrition information. You can edit everything before saving.</p>' +
+          '<div style="height:140px;border-radius:14px;border:1px dashed rgba(0,212,180,.4);background:rgba(0,212,180,.05);display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:.85rem;margin-bottom:1rem">📷 Camera preview (prototype)</div>' +
+          '<p class="form-hint" style="margin-bottom:1rem">Prototype estimate — not a real food scanner.</p>' +
+          '<div class="modal-actions"><button type="button" class="btn btn-teal" id="s-next">Take / upload photo</button>' +
+          '<button type="button" class="btn btn-ghost" data-close>Cancel</button></div>';
+      } else if (step === 2) {
+        body.innerHTML =
+          '<p class="pill muted" style="margin-bottom:.75rem">Detected (sample)</p>' +
+          '<div class="card-value" style="font-size:1.2rem;margin-bottom:.25rem">' + food.name + '</div>' +
+          '<p class="card-meta">Estimated ' + Math.round(food.kcal * portion) + ' kcal · P ' + Math.round(food.protein * portion) + 'g · C ' + Math.round(food.carbs * portion) + 'g · F ' + Math.round(food.fat * portion) + 'g</p>' +
+          '<div class="form-group" style="margin-top:1rem"><label for="portion">Portion size</label>' +
+          '<input class="form-input" id="portion" type="range" min="0.5" max="2" step="0.25" value="' + portion + '">' +
+          '<div class="form-hint"><span id="portion-lbl">' + portion + '×</span> serving</div></div>' +
+          '<div class="form-group"><label for="meal-slot">Add to</label>' +
+          '<select class="form-select" id="meal-slot"><option>Dinner</option><option>Snack</option><option>Lunch</option></select></div>' +
+          '<div class="modal-actions"><button type="button" class="btn btn-teal" id="s-save">Add to meal log</button>' +
+          '<button type="button" class="btn btn-ghost" id="s-back">Back</button></div>';
+        body.querySelector('#portion').oninput = (e) => {
+          portion = +e.target.value;
+          body.querySelector('#portion-lbl').textContent = portion + '×';
+          render(modal, close);
+          // re-bind after re-render - actually this causes loop. Better update text only.
+        };
+      }
+      const closeBtn = body.querySelector('[data-close]');
+      if (closeBtn) closeBtn.onclick = close;
+      const next = body.querySelector('#s-next');
+      if (next) next.onclick = () => { step = 2; render(modal, close); };
+      const back = body.querySelector('#s-back');
+      if (back) back.onclick = () => { step = 1; render(modal, close); };
+      const save = body.querySelector('#s-save');
+      if (save) {
+        const portionEl = body.querySelector('#portion');
+        if (portionEl) {
+          portionEl.oninput = (e) => {
+            portion = +e.target.value;
+            body.querySelector('#portion-lbl').textContent = portion + '×';
+            body.querySelector('.card-meta').textContent =
+              'Estimated ' + Math.round(food.kcal * portion) + ' kcal · P ' + Math.round(food.protein * portion) +
+              'g · C ' + Math.round(food.carbs * portion) + 'g · F ' + Math.round(food.fat * portion) + 'g';
+          };
+        }
+        save.onclick = () => {
+          meals.push({
+            id: String(Date.now()),
+            type: body.querySelector('#meal-slot').value,
+            time: 'Now',
+            name: food.name + ' (scanned)',
+            kcal: Math.round(food.kcal * portion),
+            protein: Math.round(food.protein * portion),
+            carbs: Math.round(food.carbs * portion),
+            fat: Math.round(food.fat * portion),
+          });
+          persist();
+          renderMeals();
+          updateTotalsUI();
+          Tracto.toast('Scanned meal added (prototype estimate)');
+          close();
+        };
+      }
+    }
+
+    Tracto.openModal({
+      title: 'Scan food',
+      subtitle: 'Prototype estimate',
+      content: '<div></div>',
+      onOpen(modal, close) { render(modal, close); }
+    });
+  }
+
+  window.TractoNutrition = {
+    openAddMeal: () => openMealForm(),
+    addWater,
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderMeals();
+    updateTotalsUI();
+    renderWater();
+    document.getElementById('btn-log-meal').addEventListener('click', () => openMealForm());
+    document.getElementById('btn-water').addEventListener('click', addWater);
+    document.getElementById('btn-scan').addEventListener('click', openScanFlow);
+    document.getElementById('btn-meal-ideas').addEventListener('click', () => {
+      Tracto.openModal({
+        title: 'Meal ideas',
+        content: '<ul class="feature-list"><li>Paneer tikka with salad</li><li>Greek yoghurt with berries</li><li>Lentil dal and brown rice</li><li>Egg bhurji with toast</li></ul>' +
+          '<div class="modal-actions"><button type="button" class="btn btn-teal" data-close>Close</button></div>',
+        onOpen(m, c) { m.querySelector('[data-close]').onclick = c; }
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Heart Rate — Tracto Healthcare</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body class="app-body" data-page="heart-rate">
+<div class="app-shell" id="app-shell">
+  <main class="app-main">
+    <header class="page-header">
+      <div>
+        <h1>Heart Rate</h1>
+        <p class="sub">Understand your heart rhythm, patterns and recovery.</p>
+      </div>
+    </header>
+
+    <div class="stack">
+      <!-- Current reading -->
+      <section class="card" id="hr-current">
+        <div style="display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap">
+          <div class="heart-pulse" aria-hidden="true">♥</div>
+          <div style="flex:1">
+            <div class="card-title">Current heart rate</div>
+            <div class="card-value"><span id="hr-bpm">72</span> <span class="unit">bpm</span></div>
+            <span class="pill ok" id="hr-status" style="margin-top:.45rem">Normal</span>
+            <p class="card-meta" id="hr-meta" style="margin-top:.5rem">Measured just now from your connected device.<br><span style="font-size:.68rem">Prototype sample — not a live medical sensor.</span></p>
+            <button type="button" class="btn btn-outline-teal btn-sm" id="btn-measure" style="margin-top:.75rem">Measure again</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chart -->
+      <section class="card chart-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.75rem">
+          <div class="card-title" style="margin:0">Today’s heart rate</div>
+          <div class="chart-filters" role="group" aria-label="Time range">
+            <button type="button" class="active" data-range="day">Day</button>
+            <button type="button" data-range="week">Week</button>
+            <button type="button" data-range="month">Month</button>
+          </div>
+        </div>
+        <svg class="chart-svg" id="hr-chart" viewBox="0 0 400 160" preserveAspectRatio="none" role="img" aria-label="Heart rate chart"></svg>
+        <div class="chart-legend">
+          <span><i style="background:var(--text-muted)"></i> Resting</span>
+          <span><i style="background:var(--pulse-teal)"></i> Active</span>
+          <span><i style="background:var(--vital-violet)"></i> Recovery</span>
+        </div>
+        <div class="stat-row" id="hr-stats">
+          <div class="stat-item"><div class="lbl">Lowest</div><div class="val" id="stat-low">62 bpm</div></div>
+          <div class="stat-item"><div class="lbl">Average</div><div class="val" id="stat-avg">78 bpm</div></div>
+          <div class="stat-item"><div class="lbl">Highest</div><div class="val" id="stat-high">124 bpm</div></div>
+        </div>
+      </section>
+
+      <!-- Zones -->
+      <section class="card">
+        <div class="card-title">Time in heart-rate zones</div>
+        <div class="zone-row">
+          <div class="zone-label"><span class="name">Resting · Below 70 bpm</span><span class="time">12 hr 40 min</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:78%;background:var(--text-muted)"></div></div>
+        </div>
+        <div class="zone-row">
+          <div class="zone-label"><span class="name">Light · 70–99 bpm</span><span class="time">3 hr 20 min</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:42%;opacity:.85"></div></div>
+        </div>
+        <div class="zone-row">
+          <div class="zone-label"><span class="name">Cardio · 100–139 bpm</span><span class="time">42 min</span></div>
+          <div class="bar-track"><div class="bar-fill amber" style="width:22%"></div></div>
+        </div>
+        <div class="zone-row">
+          <div class="zone-label"><span class="name">Peak · 140+ bpm</span><span class="time">8 min</span></div>
+          <div class="bar-track"><div class="bar-fill red" style="width:8%"></div></div>
+        </div>
+      </section>
+
+      <div class="grid-2">
+        <section class="card">
+          <div class="card-title">Post-workout recovery</div>
+          <div class="card-value" style="font-size:1.35rem">24 bpm</div>
+          <p class="card-meta">decrease in 2 minutes</p>
+          <p class="card-meta" style="margin-top:.5rem">Your heart rate recovered well after your latest workout.</p>
+          <span class="pill ok" style="margin-top:.55rem">Good recovery</span>
+        </section>
+        <section class="insight-card">
+          <h3>Your weekly trend</h3>
+          <p>Your average resting heart rate is 3 bpm lower than last week.</p>
+          <button type="button" class="card-link" id="btn-trends">See detailed trends</button>
+        </section>
+      </div>
+
+      <section class="card">
+        <div class="card-title">Connect a wearable</div>
+        <p class="card-meta">Sync your smartwatch or fitness band for continuous tracking.</p>
+        <button type="button" class="btn btn-outline-teal btn-sm" id="btn-devices" style="margin-top:.75rem">Manage devices</button>
+      </section>
+
+      <p class="disclaimer">Tracto helps you understand health patterns but does not replace professional medical advice. Seek medical help if you experience chest pain, faintness or unusual discomfort.</p>
+    </div>
+  </main>
+</div>
+
+<script src="app-shell.js"></script>
+<script>
+(function () {
+  const DATA = {
+    day: {
+      points: [68,70,72,69,71,74,78,85,92,88,82,76,74,72,70,73,90,110,118,105,88,80,74,70],
+      low: 62, avg: 78, high: 124, label: 'Today'
+    },
+    week: {
+      points: [74,72,71,73,70,69,72],
+      low: 64, avg: 72, high: 118, label: 'This week'
+    },
+    month: {
+      points: [76,75,74,73,72,74,71,70,72,73,71,69,70,72,71,70,69,71,72,70,68,69,71,72,70,69,68,70,71,72],
+      low: 60, avg: 71, high: 130, label: 'This month'
+    }
+  };
+
+  function drawChart(range) {
+    const d = DATA[range];
+    const svg = document.getElementById('hr-chart');
+    const pts = d.points;
+    const min = Math.min(...pts) - 10;
+    const max = Math.max(...pts) + 10;
+    const w = 400, h = 160, pad = 8;
+    const coords = pts.map((v, i) => {
+      const x = pad + (i / (pts.length - 1)) * (w - pad * 2);
+      const y = pad + (1 - (v - min) / (max - min)) * (h - pad * 2);
+      return [x, y, v];
+    });
+    const line = coords.map((c, i) => (i ? 'L' : 'M') + c[0].toFixed(1) + ' ' + c[1].toFixed(1)).join(' ');
+    const area = line + ' L' + coords[coords.length - 1][0].toFixed(1) + ' ' + h + ' L' + coords[0][0].toFixed(1) + ' ' + h + ' Z';
+    svg.innerHTML =
+      '<defs><linearGradient id="hrFill" x1="0" y1="0" x2="0" y2="1">' +
+      '<stop offset="0%" stop-color="#00d4b4" stop-opacity=".35"/>' +
+      '<stop offset="100%" stop-color="#00d4b4" stop-opacity="0"/></linearGradient></defs>' +
+      '<path d="' + area + '" fill="url(#hrFill)"/>' +
+      '<path d="' + line + '" fill="none" stroke="#00d4b4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>' +
+      coords.filter((_, i) => i % Math.ceil(pts.length / 8) === 0).map(c =>
+        '<circle cx="' + c[0] + '" cy="' + c[1] + '" r="3" fill="#00d4b4"/>'
+      ).join('');
+    document.getElementById('stat-low').textContent = d.low + ' bpm';
+    document.getElementById('stat-avg').textContent = d.avg + ' bpm';
+    document.getElementById('stat-high').textContent = d.high + ' bpm';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    drawChart('day');
+    document.querySelectorAll('[data-range]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('[data-range]').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        drawChart(btn.dataset.range);
+        Tracto.toast('Showing ' + DATA[btn.dataset.range].label.toLowerCase() + ' sample data');
+      });
+    });
+
+    document.getElementById('btn-measure').addEventListener('click', () => {
+      const card = document.getElementById('hr-current');
+      const btn = document.getElementById('btn-measure');
+      card.classList.add('measuring');
+      btn.disabled = true;
+      btn.textContent = 'Measuring…';
+      setTimeout(() => {
+        const next = 68 + Math.floor(Math.random() * 12);
+        document.getElementById('hr-bpm').textContent = next;
+        document.getElementById('hr-meta').innerHTML =
+          'Measured just now from your connected device.<br><span style="font-size:.68rem">Prototype sample — not a live medical sensor.</span>';
+        card.classList.remove('measuring');
+        btn.disabled = false;
+        btn.textContent = 'Measure again';
+        Tracto.toast('Sample reading updated · ' + next + ' bpm');
+      }, 1400);
+    });
+
+    document.getElementById('btn-trends').addEventListener('click', () => {
+      document.querySelector('[data-range="week"]').click();
+      document.querySelector('.chart-card').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    document.getElementById('btn-devices').addEventListener('click', () => {
+      Tracto.openModal({
+        title: 'Manage devices',
+        subtitle: 'Prototype — no real permissions requested',
+        content:
+          ['Apple Watch','Fitbit Charge','Garmin Venu'].map(d =>
+            '<div class="check-card"><input type="radio" name="dev"><div><div class="title">'+d+'</div><div class="desc">Sample device</div></div></div>'
+          ).join('') +
+          '<div class="modal-actions"><button type="button" class="btn btn-teal" id="conn">Connect device</button></div>',
+        onOpen(m, close) {
+          m.querySelector('#conn').onclick = () => {
+            Tracto.toast('Device connected (prototype)');
+            close();
+          };
+        }
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

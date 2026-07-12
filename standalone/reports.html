@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Reports — Tracto Healthcare</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body class="app-body" data-page="reports">
+<div class="app-shell" id="app-shell">
+  <main class="app-main">
+    <header class="page-header">
+      <div>
+        <h1>Health Reports</h1>
+        <p class="sub">Create a clear summary of your health data to save or share.</p>
+      </div>
+    </header>
+
+    <div class="stack">
+      <!-- Builder -->
+      <section class="card">
+        <div class="card-title">What would you like to include?</div>
+        <div id="cat-list">
+          <label class="check-card selected"><input type="checkbox" data-cat="overview" checked><div><div class="title">Health overview</div></div></label>
+          <label class="check-card selected"><input type="checkbox" data-cat="heart" checked><div><div class="title">Heart-rate summary</div></div></label>
+          <label class="check-card selected"><input type="checkbox" data-cat="activity" checked><div><div class="title">Activity and workouts</div></div></label>
+          <label class="check-card"><input type="checkbox" data-cat="nutrition"><div><div class="title">Nutrition</div></div></label>
+          <label class="check-card selected"><input type="checkbox" data-cat="sleep" checked><div><div class="title">Sleep</div></div></label>
+          <label class="check-card"><input type="checkbox" data-cat="weight"><div><div class="title">Weight trends</div></div></label>
+          <label class="check-card"><input type="checkbox" data-cat="notes"><div><div class="title">Personal notes</div></div></label>
+        </div>
+        <p id="cat-error" class="form-hint" style="color:var(--danger-red);display:none">Select at least one category.</p>
+
+        <div class="divider"></div>
+        <div class="card-title">Date range</div>
+        <div class="chart-filters" role="group" aria-label="Date range" id="range-filters">
+          <button type="button" data-range="7">Last 7 days</button>
+          <button type="button" class="active" data-range="30">Last 30 days</button>
+          <button type="button" data-range="90">Last 3 months</button>
+          <button type="button" data-range="custom">Custom range</button>
+        </div>
+        <div id="custom-range" class="form-row" style="margin-top:.85rem;display:none">
+          <div class="form-group"><label for="from">From</label><input class="form-input" type="date" id="from" value="2026-06-01"></div>
+          <div class="form-group"><label for="to">To</label><input class="form-input" type="date" id="to" value="2026-06-30"></div>
+        </div>
+      </section>
+
+      <!-- Preview -->
+      <section class="card">
+        <div class="card-title" id="preview-title">Your 30-day health summary</div>
+        <div class="report-preview-box">
+          <dl id="preview-dl"></dl>
+        </div>
+        <div class="form-group" style="margin-top:1rem">
+          <label for="provider-note">Note for your healthcare provider</label>
+          <textarea class="form-textarea" id="provider-note" placeholder="Add symptoms, medication changes, concerns or any context you would like to include."></textarea>
+        </div>
+      </section>
+
+      <!-- Format -->
+      <section class="card">
+        <div class="card-title">Export format</div>
+        <div class="format-opts">
+          <label class="format-opt selected"><input type="radio" name="fmt" value="pdf" checked><div><div class="title" style="font-weight:600;font-size:.9rem">PDF report</div><div class="desc" style="font-size:.72rem;color:var(--text-muted)">Printable summary (sample)</div></div></label>
+          <label class="format-opt"><input type="radio" name="fmt" value="csv"><div><div class="title" style="font-weight:600;font-size:.9rem">CSV data</div><div class="desc" style="font-size:.72rem;color:var(--text-muted)">Spreadsheet-friendly sample</div></div></label>
+          <label class="format-opt"><input type="radio" name="fmt" value="link"><div><div class="title" style="font-weight:600;font-size:.9rem">Shareable secure link</div><div class="desc" style="font-size:.72rem;color:var(--text-muted)">Prototype link only</div></div></label>
+        </div>
+        <div style="display:flex;gap:.55rem;flex-wrap:wrap;margin-top:1.15rem">
+          <button type="button" class="btn btn-grad" id="btn-generate">Generate report</button>
+          <button type="button" class="btn btn-ghost" id="btn-preview">Preview report</button>
+        </div>
+      </section>
+
+      <!-- Recent -->
+      <section class="card">
+        <div class="card-title">Recent reports</div>
+        <div id="recent-list"></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="app-shell.js"></script>
+<script>
+(function () {
+  const PREVIEW = {
+    7: {
+      title: 'Your 7-day health summary',
+      items: {
+        overview: ['Average resting heart rate', '74 bpm'],
+        heart: ['Average resting heart rate', '74 bpm'],
+        activity: ['Average daily steps', '8,120'],
+        nutrition: ['Nutrition goal adherence', '82%'],
+        sleep: ['Average sleep', '7 hr 05 min'],
+        weight: ['Weight change', '–0.3 kg'],
+        notes: ['Personal notes', 'Included when provided'],
+      }
+    },
+    30: {
+      title: 'Your 30-day health summary',
+      items: {
+        overview: ['Average resting heart rate', '72 bpm'],
+        heart: ['Average resting heart rate', '72 bpm'],
+        activity: ['Average daily steps', '7,840'],
+        nutrition: ['Nutrition goal adherence', '78%'],
+        sleep: ['Average sleep', '7 hr 12 min'],
+        weight: ['Weight change', '–1.2 kg'],
+        notes: ['Personal notes', 'Included when provided'],
+      }
+    },
+    90: {
+      title: 'Your 3-month health summary',
+      items: {
+        overview: ['Average resting heart rate', '73 bpm'],
+        heart: ['Average resting heart rate', '73 bpm'],
+        activity: ['Average daily steps', '7,450'],
+        nutrition: ['Nutrition goal adherence', '74%'],
+        sleep: ['Average sleep', '7 hr 08 min'],
+        weight: ['Weight change', '–2.1 kg'],
+        notes: ['Personal notes', 'Included when provided'],
+      }
+    },
+    custom: {
+      title: 'Your custom-range health summary',
+      items: {
+        overview: ['Average resting heart rate', '72 bpm'],
+        heart: ['Average resting heart rate', '72 bpm'],
+        activity: ['Average daily steps', '7,600'],
+        nutrition: ['Nutrition goal adherence', '76%'],
+        sleep: ['Average sleep', '7 hr 10 min'],
+        weight: ['Weight change', '–0.8 kg'],
+        notes: ['Personal notes', 'Included when provided'],
+      }
+    }
+  };
+
+  let range = '30';
+  let recent = Tracto.storageGet('tracto_reports', [
+    { id: 'r1', title: 'Monthly health summary', dates: '01–30 June' },
+    { id: 'r2', title: 'Heart-rate report', dates: '15–21 June' },
+    { id: 'r3', title: 'Nutrition summary', dates: '01–07 June' },
+  ]);
+
+  function selectedCats() {
+    return [...document.querySelectorAll('[data-cat]:checked')].map((c) => c.dataset.cat);
+  }
+
+  function updatePreview() {
+    const data = PREVIEW[range];
+    document.getElementById('preview-title').textContent = data.title;
+    const cats = selectedCats();
+    const seen = new Set();
+    const rows = [];
+    cats.forEach((c) => {
+      const item = data.items[c];
+      if (!item || seen.has(item[0])) return;
+      seen.add(item[0]);
+      rows.push('<div><dt>' + item[0] + '</dt><dd>' + item[1] + '</dd></div>');
+    });
+    document.getElementById('preview-dl').innerHTML = rows.length
+      ? rows.join('')
+      : '<div><dt>No categories selected</dt><dd>Choose at least one section</dd></div>';
+  }
+
+  function renderRecent() {
+    const host = document.getElementById('recent-list');
+    if (!recent.length) {
+      host.innerHTML = '<p class="card-meta">No reports yet.</p>';
+      return;
+    }
+    host.innerHTML = recent.map((r) =>
+      '<div class="recent-report" data-id="' + r.id + '">' +
+      '<div class="info"><div class="title">' + r.title + '</div><div class="dates">' + r.dates + '</div></div>' +
+      '<div class="recent-actions">' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-act="view">View</button>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-act="download">Download</button>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-act="share">Share</button>' +
+      '<button type="button" class="btn btn-ghost btn-sm" data-act="delete">Delete</button>' +
+      '</div></div>'
+    ).join('');
+
+    host.querySelectorAll('.recent-report').forEach((row) => {
+      row.querySelectorAll('[data-act]').forEach((btn) => {
+        btn.addEventListener('click', () => handleRecent(row.dataset.id, btn.dataset.act, row));
+      });
+    });
+  }
+
+  function handleRecent(id, act) {
+    const report = recent.find((r) => r.id === id);
+    if (act === 'view' || act === 'download') {
+      openSampleReport(report);
+      return;
+    }
+    if (act === 'share') {
+      openShareConfirm(report);
+      return;
+    }
+    if (act === 'delete') {
+      Tracto.openModal({
+        title: 'Delete report?',
+        content: '<p style="font-size:.9rem;color:var(--text-secondary)">Remove “' + report.title + '” from recent reports?</p>' +
+          '<div class="modal-actions"><button type="button" class="btn btn-teal" id="del-r">Delete</button>' +
+          '<button type="button" class="btn btn-ghost" data-close>Cancel</button></div>',
+        onOpen(m, close) {
+          m.querySelector('[data-close]').onclick = close;
+          m.querySelector('#del-r').onclick = () => {
+            recent = recent.filter((r) => r.id !== id);
+            Tracto.storageSet('tracto_reports', recent);
+            renderRecent();
+            Tracto.toast('Report deleted');
+            close();
+          };
+        }
+      });
+    }
+  }
+
+  function openSampleReport(report) {
+    const note = document.getElementById('provider-note').value;
+    const cats = selectedCats();
+    const data = PREVIEW[range];
+    let body = '<p class="pill muted" style="margin-bottom:1rem">Sample data · prototype report</p>';
+    body += '<h3 style="margin-bottom:.75rem">' + (report ? report.title : data.title) + '</h3>';
+    cats.forEach((c) => {
+      const item = data.items[c];
+      if (item) body += '<p style="font-size:.88rem;margin:.4rem 0"><strong>' + item[0] + ':</strong> ' + item[1] + '</p>';
+    });
+    if (note) body += '<div class="divider"></div><p style="font-size:.85rem;color:var(--text-secondary)"><strong>Provider note:</strong> ' + note.replace(/</g, '&lt;') + '</p>';
+    body += '<div class="modal-actions"><button type="button" class="btn btn-teal" id="print-r">Download PDF</button>' +
+      '<button type="button" class="btn btn-ghost" data-close>Close</button></div>';
+    Tracto.openModal({
+      title: 'Report preview',
+      wide: true,
+      content: body,
+      onOpen(m, close) {
+        m.querySelector('[data-close]').onclick = close;
+        m.querySelector('#print-r').onclick = () => {
+          Tracto.toast('Sample PDF ready (prototype — no file uploaded)');
+          downloadSample(report || { title: data.title, dates: 'Sample' });
+        };
+      }
+    });
+  }
+
+  function downloadSample(report) {
+    const text = 'Tracto Healthcare — Sample Report\n' +
+      report.title + '\n' + report.dates + '\n\n' +
+      'This is prototype sample data only. Not for clinical use.\n';
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'tracto-sample-report.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function openShareConfirm(report) {
+    Tracto.openModal({
+      title: 'Share health report?',
+      content: '<p style="font-size:.9rem;color:var(--text-secondary);line-height:1.55;margin-bottom:1rem">Only the information selected in this report will be shared.</p>' +
+        '<div class="modal-actions"><button type="button" class="btn btn-teal" id="share-go">Continue to share</button>' +
+        '<button type="button" class="btn btn-ghost" data-close>Cancel</button></div>',
+      onOpen(m, close) {
+        m.querySelector('[data-close]').onclick = close;
+        m.querySelector('#share-go').onclick = () => {
+          close();
+          setTimeout(() => {
+            Tracto.openModal({
+              title: 'Share options',
+              subtitle: 'Prototype — nothing is transmitted',
+              content:
+                '<div class="modal-actions" style="flex-direction:column">' +
+                '<button type="button" class="btn btn-outline-teal btn-block" data-share="doctor">Share with doctor</button>' +
+                '<button type="button" class="btn btn-outline-teal btn-block" data-share="email">Send by email</button>' +
+                '<button type="button" class="btn btn-outline-teal btn-block" data-share="files">Save to files</button>' +
+                '<button type="button" class="btn btn-ghost btn-block" data-close>Close</button></div>',
+              onOpen(m2, c2) {
+                m2.querySelector('[data-close]').onclick = c2;
+                m2.querySelectorAll('[data-share]').forEach((b) => {
+                  b.onclick = () => {
+                    Tracto.toast('Share simulated · ' + b.dataset.share + ' (no data sent)');
+                    c2();
+                  };
+                });
+              }
+            });
+          }, 220);
+        };
+      }
+    });
+  }
+
+  function generateReport() {
+    const cats = selectedCats();
+    if (!cats.length) {
+      document.getElementById('cat-error').style.display = 'block';
+      return;
+    }
+    document.getElementById('cat-error').style.display = 'none';
+    const btn = document.getElementById('btn-generate');
+    btn.disabled = true;
+    btn.textContent = 'Generating…';
+
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = 'Generate report';
+      const fmt = document.querySelector('input[name="fmt"]:checked').value;
+      const entry = {
+        id: 'r' + Date.now(),
+        title: PREVIEW[range].title.replace('Your ', '').replace(/^./, (c) => c.toUpperCase()),
+        dates: range === 'custom'
+          ? document.getElementById('from').value + ' → ' + document.getElementById('to').value
+          : 'Last ' + (range === '90' ? '3 months' : range + ' days')
+      };
+      recent.unshift(entry);
+      Tracto.storageSet('tracto_reports', recent);
+      renderRecent();
+      Tracto.toast('Report generated');
+
+      Tracto.openModal({
+        title: 'Your report is ready',
+        content:
+          '<div class="success-state" style="padding:1rem 0">' +
+          '<div class="check">✓</div>' +
+          '<p style="color:var(--text-secondary);margin-bottom:1rem">Sample ' + fmt.toUpperCase() + ' report created. No data left this device.</p></div>' +
+          '<div class="modal-actions" style="flex-direction:column">' +
+          '<button type="button" class="btn btn-teal btn-block" id="dl">Download PDF</button>' +
+          '<button type="button" class="btn btn-outline-teal btn-block" id="sh">Share with doctor</button>' +
+          '<button type="button" class="btn btn-outline-teal btn-block" id="em">Send by email</button>' +
+          '<button type="button" class="btn btn-ghost btn-block" id="sv">Save to files</button></div>',
+        onOpen(m, close) {
+          m.querySelector('#dl').onclick = () => { downloadSample(entry); Tracto.toast('Sample file downloaded'); };
+          m.querySelector('#sh').onclick = () => { close(); setTimeout(() => openShareConfirm(entry), 220); };
+          m.querySelector('#em').onclick = () => Tracto.toast('Email share simulated (no data sent)');
+          m.querySelector('#sv').onclick = () => { downloadSample(entry); Tracto.toast('Saved locally (sample file)'); };
+        }
+      });
+    }, 1200);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updatePreview();
+    renderRecent();
+
+    document.querySelectorAll('#cat-list .check-card').forEach((card) => {
+      const input = card.querySelector('input');
+      input.addEventListener('change', () => {
+        card.classList.toggle('selected', input.checked);
+        document.getElementById('cat-error').style.display = 'none';
+        updatePreview();
+      });
+    });
+
+    document.querySelectorAll('#range-filters [data-range]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#range-filters [data-range]').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        range = btn.dataset.range;
+        document.getElementById('custom-range').style.display = range === 'custom' ? 'grid' : 'none';
+        updatePreview();
+      });
+    });
+
+    document.querySelectorAll('.format-opt').forEach((opt) => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.format-opt').forEach((o) => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        opt.querySelector('input').checked = true;
+      });
+    });
+
+    document.getElementById('btn-generate').addEventListener('click', generateReport);
+    document.getElementById('btn-preview').addEventListener('click', () => {
+      if (!selectedCats().length) {
+        document.getElementById('cat-error').style.display = 'block';
+        return;
+      }
+      openSampleReport(null);
+    });
+  });
+})();
+</script>
+</body>
+</html>

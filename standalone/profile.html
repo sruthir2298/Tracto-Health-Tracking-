@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile — Tracto Healthcare</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body class="app-body" data-page="profile">
+<div class="app-shell" id="app-shell">
+  <main class="app-main">
+    <header class="page-header">
+      <div>
+        <h1>Profile</h1>
+        <p class="sub">Account details, membership, and offers.</p>
+      </div>
+    </header>
+
+    <div class="stack">
+      <section class="card profile-hero">
+        <div class="sidebar-profile" style="padding:0">
+          <div class="avatar lg">S</div>
+          <div>
+            <div class="name" style="font-size:1.15rem">Sruthi</div>
+            <div class="meta">sruthi@tracto.demo</div>
+            <div class="meta" id="plan-badge-line" style="margin-top:.35rem;color:var(--pulse-teal)">Basic plan</div>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <a class="btn btn-outline-teal btn-sm" href="onboarding.html">Edit goals &amp; setup</a>
+          <a class="btn btn-ghost btn-sm" href="landing.html">Sign out</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-title">Account details</div>
+        <div class="detail-list" id="detail-list">
+          <div class="detail-row"><span>Date of birth</span><strong id="d-dob">—</strong></div>
+          <div class="detail-row"><span>Height</span><strong id="d-height">—</strong></div>
+          <div class="detail-row"><span>Weight</span><strong id="d-weight">—</strong></div>
+          <div class="detail-row"><span>Activity level</span><strong id="d-activity">—</strong></div>
+          <div class="detail-row"><span>Units</span><strong id="d-units">Metric</strong></div>
+        </div>
+      </section>
+
+      <section class="card cycle-card">
+        <div class="cycle-head">
+          <div class="metric-ico-lg" style="background:rgba(255,77,109,.12);color:var(--danger-red)">☽</div>
+          <div>
+            <div class="card-title" style="margin:0">Cycle &amp; pregnancy</div>
+            <p class="card-meta">Optional · helps personalise recovery, nutrition and activity guidance.</p>
+          </div>
+        </div>
+        <div class="toggle-row">
+          <span>Track menstrual cycle</span>
+          <label class="toggle"><input type="checkbox" id="toggle-cycle"><span class="slider"></span></label>
+        </div>
+        <div id="cycle-fields" hidden>
+          <div class="form-row" style="margin-top:.75rem">
+            <div class="form-group"><label for="cycle-last">Last period start</label><input class="form-input" type="date" id="cycle-last"></div>
+            <div class="form-group"><label for="cycle-len">Typical cycle (days)</label><input class="form-input" type="number" id="cycle-len" value="28" min="20" max="45"></div>
+          </div>
+          <div class="cycle-calendar" id="cycle-calendar" aria-hidden="true"></div>
+          <p class="form-hint" id="cycle-hint">We’ll show a simple phase guide — not a medical diagnosis.</p>
+        </div>
+        <div class="toggle-row" style="margin-top:.5rem">
+          <span>I’m pregnant</span>
+          <label class="toggle"><input type="checkbox" id="toggle-pregnant"><span class="slider"></span></label>
+        </div>
+        <div id="pregnant-fields" hidden>
+          <div class="form-group" style="margin-top:.75rem">
+            <label for="preg-week">Current week</label>
+            <input class="form-input" type="number" id="preg-week" min="1" max="42" value="12">
+          </div>
+          <div class="preg-banner">
+            <strong id="preg-label">Week 12</strong>
+            <span>We’ll soften intensity targets and favour recovery-friendly movement.</span>
+          </div>
+        </div>
+        <button type="button" class="btn btn-teal btn-sm" id="btn-save-cycle" style="margin-top:1rem">Save preferences</button>
+      </section>
+
+      <div>
+        <div class="section-label">Membership plans</div>
+        <p class="card-meta" style="margin:-.35rem 0 .85rem">Upgrade for coach consults, nutrition guidance, and fuller video access in Activity.</p>
+        <div class="plan-grid" id="plan-grid">
+          <article class="plan-card" data-plan="basic">
+            <div class="plan-tier">Basic</div>
+            <div class="plan-price">Free</div>
+            <ul class="plan-perks">
+              <li>Personalised step &amp; calorie targets</li>
+              <li>Daily progress tracking</li>
+              <li>Starter workout videos</li>
+            </ul>
+            <button type="button" class="btn btn-ghost btn-sm btn-block plan-cta" data-select="basic">Current plan</button>
+          </article>
+          <article class="plan-card" data-plan="intermediate">
+            <div class="plan-tier">Intermediate</div>
+            <div class="plan-price">₹499<span>/mo</span></div>
+            <ul class="plan-perks">
+              <li>Everything in Basic</li>
+              <li>Full trainer video library</li>
+              <li>1 coach consult / month</li>
+              <li>Nutrition tips from trainers</li>
+            </ul>
+            <button type="button" class="btn btn-teal btn-sm btn-block plan-cta" data-select="intermediate">Upgrade</button>
+          </article>
+          <article class="plan-card featured" data-plan="advanced">
+            <span class="plan-badge">Best value</span>
+            <div class="plan-tier">Advanced</div>
+            <div class="plan-price">₹999<span>/mo</span></div>
+            <ul class="plan-perks">
+              <li>Everything in Intermediate</li>
+              <li>Weekly live trainer sessions</li>
+              <li>Unlimited coach &amp; nutrition consults</li>
+              <li>Custom workout + meal plans</li>
+            </ul>
+            <button type="button" class="btn btn-grad btn-sm btn-block plan-cta" data-select="advanced">Go Advanced</button>
+          </article>
+        </div>
+      </div>
+
+      <div>
+        <div class="section-label">Offers for you</div>
+        <div class="offer-grid">
+          <article class="offer-card">
+            <span class="pill ok">Limited</span>
+            <h4>First month Intermediate at ₹249</h4>
+            <p>Half-price coach access and full video library for new upgrades.</p>
+            <button type="button" class="card-link" data-offer="intermediate">Apply offer →</button>
+          </article>
+          <article class="offer-card">
+            <span class="pill muted">Bundle</span>
+            <h4>Advanced + nutrition consult</h4>
+            <p>Save ₹200 when you book your first trainer nutrition session with Advanced.</p>
+            <button type="button" class="card-link" data-offer="advanced">View bundle →</button>
+          </article>
+          <article class="offer-card">
+            <span class="pill ok">Refer</span>
+            <h4>Invite a friend · 1 free week</h4>
+            <p>Share Tracto and unlock a week of Intermediate when they join.</p>
+            <button type="button" class="card-link" id="btn-refer">Copy invite link →</button>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="app-shell.js"></script>
+<script>
+(function () {
+  const PLAN_RANK = { basic: 0, intermediate: 1, advanced: 2 };
+  const PLAN_LABEL = { basic: 'Basic', intermediate: 'Intermediate', advanced: 'Advanced' };
+  let plan = Tracto.storageGet('tracto_plan', 'basic');
+  const profile = Tracto.storageGet('tracto_profile', {
+    dob: '1998-06-15', height: 165, weight: 62, activity: 'Lightly active'
+  });
+  const onboard = Tracto.storageGet('tracto_onboard', null);
+
+  function fillDetails() {
+    const dob = (onboard && onboard.dob) || profile.dob;
+    const height = (onboard && onboard.height) || profile.height;
+    const weight = (onboard && onboard.weight) || profile.weight;
+    const activity = (onboard && onboard.activity) || profile.activity;
+    const units = (onboard && onboard.units) || 'Metric (kg, cm)';
+    document.getElementById('d-dob').textContent = dob || '—';
+    document.getElementById('d-height').textContent = height ? height + ' cm' : '—';
+    document.getElementById('d-weight').textContent = weight ? weight + ' kg' : '—';
+    document.getElementById('d-activity').textContent = activity || '—';
+    document.getElementById('d-units').textContent = units;
+    document.getElementById('plan-badge-line').textContent = PLAN_LABEL[plan] + ' plan';
+  }
+
+  function renderPlans() {
+    document.querySelectorAll('.plan-card').forEach((card) => {
+      const p = card.getAttribute('data-plan');
+      card.classList.toggle('is-current', p === plan);
+      const cta = card.querySelector('.plan-cta');
+      if (p === plan) {
+        cta.textContent = 'Current plan';
+        cta.className = 'btn btn-ghost btn-sm btn-block plan-cta';
+        cta.disabled = false;
+      } else if (PLAN_RANK[p] < PLAN_RANK[plan]) {
+        cta.textContent = 'Included';
+        cta.className = 'btn btn-ghost btn-sm btn-block plan-cta';
+        cta.disabled = true;
+      } else {
+        cta.textContent = p === 'advanced' ? 'Go Advanced' : 'Upgrade';
+        cta.className = (p === 'advanced' ? 'btn btn-grad' : 'btn btn-teal') + ' btn-sm btn-block plan-cta';
+        cta.disabled = false;
+      }
+    });
+    document.getElementById('plan-badge-line').textContent = PLAN_LABEL[plan] + ' plan';
+  }
+
+  function setPlan(next) {
+    plan = next;
+    Tracto.storageSet('tracto_plan', plan);
+    renderPlans();
+    Tracto.toast(PLAN_LABEL[next] + ' plan activated');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    fillDetails();
+    renderPlans();
+
+    const cycle = Tracto.storageGet('tracto_cycle', {
+      enabled: false, lastStart: '', length: 28, pregnant: false, week: 12
+    });
+
+    function renderCycleCal() {
+      const host = document.getElementById('cycle-calendar');
+      if (!cycle.enabled) { host.innerHTML = ''; return; }
+      const phases = ['M', 'M', 'M', 'F', 'F', 'F', 'F', 'F', 'O', 'O', 'L', 'L', 'L', 'L'];
+      host.innerHTML = phases.map((p, i) =>
+        '<span class="cycle-day cycle-day--' + p.toLowerCase() + '" title="Day ' + (i + 1) + '">' + (i + 1) + '</span>'
+      ).join('') + '<div class="cycle-legend"><span><i class="m"></i>Period</span><span><i class="f"></i>Follicular</span><span><i class="o"></i>Ovulation</span><span><i class="l"></i>Luteal</span></div>';
+    }
+
+    function syncCycleUI() {
+      document.getElementById('toggle-cycle').checked = !!cycle.enabled;
+      document.getElementById('toggle-pregnant').checked = !!cycle.pregnant;
+      document.getElementById('cycle-fields').hidden = !cycle.enabled;
+      document.getElementById('pregnant-fields').hidden = !cycle.pregnant;
+      document.getElementById('cycle-last').value = cycle.lastStart || '';
+      document.getElementById('cycle-len').value = cycle.length || 28;
+      document.getElementById('preg-week').value = cycle.week || 12;
+      document.getElementById('preg-label').textContent = 'Week ' + (cycle.week || 12);
+      renderCycleCal();
+    }
+
+    syncCycleUI();
+
+    document.getElementById('toggle-cycle').addEventListener('change', (e) => {
+      cycle.enabled = e.target.checked;
+      if (cycle.enabled) cycle.pregnant = false;
+      syncCycleUI();
+    });
+    document.getElementById('toggle-pregnant').addEventListener('change', (e) => {
+      cycle.pregnant = e.target.checked;
+      if (cycle.pregnant) cycle.enabled = false;
+      syncCycleUI();
+    });
+    document.getElementById('preg-week').addEventListener('input', (e) => {
+      cycle.week = +e.target.value || 12;
+      document.getElementById('preg-label').textContent = 'Week ' + cycle.week;
+    });
+    document.getElementById('btn-save-cycle').addEventListener('click', () => {
+      cycle.lastStart = document.getElementById('cycle-last').value;
+      cycle.length = +document.getElementById('cycle-len').value || 28;
+      cycle.week = +document.getElementById('preg-week').value || 12;
+      Tracto.storageSet('tracto_cycle', cycle);
+      Tracto.toast(cycle.pregnant ? 'Pregnancy preferences saved' : cycle.enabled ? 'Cycle tracking linked' : 'Preferences saved');
+    });
+
+    document.querySelectorAll('[data-select]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const next = btn.getAttribute('data-select');
+        if (next === plan && btn.textContent.includes('Current')) return;
+        setPlan(next);
+      });
+    });
+
+    document.querySelectorAll('[data-offer]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const next = btn.getAttribute('data-offer');
+        setPlan(next);
+        Tracto.toast('Offer applied · ' + PLAN_LABEL[next] + ' selected');
+      });
+    });
+
+    document.getElementById('btn-refer').addEventListener('click', () => {
+      const link = 'https://tracto.demo/invite/sruthi';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(link).then(() => Tracto.toast('Invite link copied')).catch(() => Tracto.toast(link));
+      } else {
+        Tracto.toast(link);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

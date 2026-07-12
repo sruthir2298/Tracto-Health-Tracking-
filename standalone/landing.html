@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tracto Healthcare — Your daily health, simplified</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="top-nav" aria-label="Primary">
+    <a href="landing.html" class="logo">tracto</a>
+    <ul class="sec-nav-list">
+      <li><a href="#hero" data-section="hero" class="sec-nav-link active">Home</a></li>
+      <li><a href="#why" data-section="why" class="sec-nav-link">Why Tracto</a></li>
+      <li><a href="#explore" data-section="explore" class="sec-nav-link">Explore</a></li>
+      <li><a href="#features" data-section="features" class="sec-nav-link">Features</a></li>
+      <li><a href="#how" data-section="how" class="sec-nav-link">How it works</a></li>
+      <li><a href="signup.html" data-section="download" class="sec-nav-link">Get started</a></li>
+    </ul>
+    <a href="signup.html" class="nav-cta">Sign up / Log in</a>
+  </nav>
+</header>
+
+<main class="page-main">
+
+  <!-- HERO -->
+  <section id="hero" class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <div class="hero-eyebrow reveal"><span class="dot"></span> Health tracking, reimagined</div>
+          <h1 class="hero-title reveal d1">Your daily health,<br><em>made simple.</em></h1>
+          <p class="hero-sub reveal d2">One intelligent home for heart rate, nutrition, fitness, sleep, and hydration. Tracto brings healthcare, fitness, and lifestyle together - with smart insights that feel personal, not clinical.</p>
+          <div class="hero-ctas reveal d3">
+            <a href="signup.html" class="btn-primary">Create your free account</a>
+            <a href="#explore" class="btn-secondary">See how it works</a>
+          </div>
+          <div class="hero-trust reveal d4">
+            <span><span class="ck">✓</span> Privacy-first</span>
+            <span><span class="ck">✓</span> Wearable sync</span>
+            <span><span class="ck">✓</span> Smart insights</span>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal d2">
+          <div class="phones-stage phones-stage--image">
+            <div class="phones-float-wrap">
+              <img
+                class="phones-img"
+                src="assets/tracto-phones.png?v=2"
+                alt="Tracto home and insights screens on two phones"
+                width="1024"
+                height="682"
+                loading="eager"
+              />
+            </div>
+          </div>
+
+          <div class="metric-tabs" role="list" aria-label="Health metrics">
+            <button type="button" class="metric-tab metric-tab--heart" role="listitem" style="--tab:var(--danger-red);--tab-soft:rgba(255,77,109,.14)">
+              <span class="metric-ico" aria-hidden="true">♥</span>
+              <span class="metric-copy"><span class="metric-lbl">Heart Rate</span><span class="metric-val">72 bpm</span></span>
+            </button>
+            <button type="button" class="metric-tab metric-tab--nutrition" role="listitem" style="--tab:#22C55E;--tab-soft:rgba(34,197,94,.14)">
+              <span class="metric-ico" aria-hidden="true">🌿</span>
+              <span class="metric-copy"><span class="metric-lbl">Nutrition</span><span class="metric-val">1,420 kcal</span></span>
+            </button>
+            <button type="button" class="metric-tab metric-tab--sleep" role="listitem" style="--tab:var(--vital-violet);--tab-soft:rgba(124,92,252,.14)">
+              <span class="metric-ico" aria-hidden="true">☾</span>
+              <span class="metric-copy"><span class="metric-lbl">Sleep</span><span class="metric-val">7h 24m</span></span>
+            </button>
+            <button type="button" class="metric-tab metric-tab--hydro" role="listitem" style="--tab:#38BDF8;--tab-soft:rgba(56,189,248,.14)">
+              <span class="metric-ico" aria-hidden="true">💧</span>
+              <span class="metric-copy"><span class="metric-lbl">Hydration</span><span class="metric-val">8 cups</span></span>
+            </button>
+            <button type="button" class="metric-tab metric-tab--activity" role="listitem" style="--tab:var(--pulse-teal);--tab-soft:rgba(0,212,180,.14)">
+              <span class="metric-ico" aria-hidden="true">🏃</span>
+              <span class="metric-copy"><span class="metric-lbl">Activity</span><span class="metric-val">6,420 steps</span></span>
+            </button>
+            <button type="button" class="metric-tab metric-tab--wellness" role="listitem" style="--tab:#A78BFA;--tab-soft:rgba(167,139,250,.14)">
+              <span class="metric-ico" aria-hidden="true">✦</span>
+              <span class="metric-copy"><span class="metric-lbl">Wellness</span><span class="metric-val">Good</span></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY -->
+  <section id="why" class="section-bordered">
+    <div class="wrap">
+      <div class="sec-tag reveal">Why Tracto</div>
+      <h2 class="sec-title reveal d1">One place for everything that matters</h2>
+      <p class="sec-sub reveal d2">Your health data lives across five apps today. Tracto brings it together — interpreted, connected, and calm.</p>
+      <div class="value-grid">
+        <div class="value-card reveal"><div class="accent-bar" style="background:var(--danger-red)"></div><div class="ico" style="background:rgba(255,77,109,.1)">♥</div><h3>Heart Rate</h3><p>Live bpm, HRV &amp; ECG trends</p></div>
+        <div class="value-card reveal d1"><div class="accent-bar" style="background:var(--bio-amber)"></div><div class="ico" style="background:rgba(245,158,11,.1)">🥗</div><h3>Nutrition</h3><p>Calories, macros &amp; meal log</p></div>
+        <div class="value-card reveal d2"><div class="accent-bar" style="background:var(--vital-violet)"></div><div class="ico" style="background:rgba(124,92,252,.1)">👟</div><h3>Activity</h3><p>Steps, workouts &amp; streaks</p></div>
+        <div class="value-card reveal d3"><div class="accent-bar" style="background:var(--vital-violet)"></div><div class="ico" style="background:rgba(124,92,252,.1)">😴</div><h3>Sleep</h3><p>Duration &amp; recovery score</p></div>
+        <div class="value-card reveal d4"><div class="accent-bar" style="background:var(--pulse-teal)"></div><div class="ico" style="background:rgba(0,212,180,.1)">💧</div><h3>Hydration</h3><p>Daily water intake goals</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXPLORE APP SCREENS -->
+  <section id="explore" class="section-bordered">
+    <div class="wrap">
+      <div class="sec-tag reveal">Explore the app</div>
+      <h2 class="sec-title reveal d1">Seven screens. One calm health home.</h2>
+      <p class="sec-sub reveal d2">Open any card to try a live prototype — no account required.</p>
+      <div class="explore-grid">
+        <a href="onboarding.html" class="explore-card reveal">
+          <div class="accent-bar" style="background:var(--vital-violet)"></div>
+          <div class="ico" style="background:rgba(124,92,252,.1)">✦</div>
+          <h3>Onboarding</h3>
+          <div class="desc">Start your health journey</div>
+          <p class="copy">Set your goals and connect your health devices.</p>
+          <span class="cta">GET STARTED →</span>
+        </a>
+        <a href="dashboard.html" class="explore-card reveal d1">
+          <div class="accent-bar" style="background:var(--pulse-teal)"></div>
+          <div class="ico" style="background:rgba(0,212,180,.1)">⌂</div>
+          <h3>Dashboard</h3>
+          <div class="desc">Your health at a glance</div>
+          <p class="copy">Vitals, goals and daily insights in one place.</p>
+          <span class="cta">VIEW DASHBOARD →</span>
+        </a>
+        <a href="heart-rate.html" class="explore-card reveal d2">
+          <div class="accent-bar" style="background:var(--danger-red)"></div>
+          <div class="ico" style="background:rgba(255,77,109,.1)">♥</div>
+          <h3>Heart rate</h3>
+          <div class="desc">Understand your heart</div>
+          <p class="copy">Live readings, trends, zones and recovery.</p>
+          <span class="cta">TRACK HEART RATE →</span>
+        </a>
+        <a href="nutrition.html" class="explore-card reveal d1">
+          <div class="accent-bar" style="background:var(--bio-amber)"></div>
+          <div class="ico" style="background:rgba(245,158,11,.1)">🥗</div>
+          <h3>Nutrition</h3>
+          <div class="desc">Make every meal count</div>
+          <p class="copy">Log meals with photos, track water and macros.</p>
+          <span class="cta">LOG NUTRITION →</span>
+        </a>
+        <a href="activity.html" class="explore-card reveal d2">
+          <div class="accent-bar" style="background:var(--pulse-teal)"></div>
+          <div class="ico" style="background:rgba(0,212,180,.1)">🏃</div>
+          <h3>Activity</h3>
+          <div class="desc">Move with a personal plan</div>
+          <p class="copy">Targets, progress graphs, trainer videos and coaching.</p>
+          <span class="cta">VIEW ACTIVITY →</span>
+        </a>
+        <a href="sleep.html" class="explore-card reveal d3">
+          <div class="accent-bar" style="background:var(--vital-violet)"></div>
+          <div class="ico" style="background:rgba(124,92,252,.1)">☾</div>
+          <h3>Sleep</h3>
+          <div class="desc">Rest and recovery</div>
+          <p class="copy">Duration, stages and weekly sleep patterns.</p>
+          <span class="cta">VIEW SLEEP →</span>
+        </a>
+        <a href="reports.html" class="explore-card reveal d1">
+          <div class="accent-bar" style="background:var(--vital-violet)"></div>
+          <div class="ico" style="background:rgba(124,92,252,.1)">📄</div>
+          <h3>Report export</h3>
+          <div class="desc">Share clearer health insights</div>
+          <p class="copy">Create secure reports for yourself or your doctor.</p>
+          <span class="cta">CREATE REPORT →</span>
+        </a>
+        <a href="profile.html" class="explore-card reveal d2">
+          <div class="accent-bar" style="background:var(--pulse-teal)"></div>
+          <div class="ico" style="background:rgba(0,212,180,.1)">👤</div>
+          <h3>Profile</h3>
+          <div class="desc">Plans, cycle &amp; offers</div>
+          <p class="copy">Membership, pregnancy or cycle tracking, and account details.</p>
+          <span class="cta">OPEN PROFILE →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="section-bordered">
+    <div class="wrap">
+      <div class="sec-tag reveal">Features</div>
+      <h2 class="sec-title reveal d1">Designed for daily wellness</h2>
+      <p class="sec-sub reveal d2">Every metric gets a one-line story — so you always know what to do next.</p>
+      <div class="feat-grid">
+        <article class="feat-card reveal">
+          <div class="f-head"><div class="f-ico" style="background:rgba(255,77,109,.1)">♥</div><div><h3>Live heart-rate monitoring</h3><p>Real-time bpm with ECG visualization, resting HR trends, and recovery insights.</p></div></div>
+          <div class="feat-viz"><svg viewBox="0 0 200 52" preserveAspectRatio="none" style="width:100%;height:100%"><path class="ecg-path" d="M0 26 H40 L50 26 L58 8 L66 44 L74 26 H200" fill="none" stroke="var(--danger-red)" stroke-width="2"/></svg></div>
+        </article>
+        <article class="feat-card reveal d1">
+          <div class="f-head"><div class="f-ico" style="background:rgba(245,158,11,.1)">🥗</div><div><h3>Nutrition &amp; calorie tracking</h3><p>Calorie ring, macro bars, and localised meal logging with smart nudges.</p></div></div>
+          <div class="feat-viz feat-ring"><svg width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="var(--border)" stroke-width="4"/><circle cx="22" cy="22" r="18" fill="none" stroke="var(--pulse-teal)" stroke-width="4" stroke-dasharray="70 113" stroke-linecap="round" transform="rotate(-90 22 22)"/><circle cx="22" cy="22" r="18" fill="none" stroke="var(--bio-amber)" stroke-width="4" stroke-dasharray="25 113" stroke-linecap="round" transform="rotate(40 22 22)"/></svg></div>
+        </article>
+        <article class="feat-card reveal d2">
+          <div class="f-head"><div class="f-ico" style="background:rgba(124,92,252,.1)">👟</div><div><h3>Activity &amp; step tracking</h3><p>Weekly activity charts, workout calories, and streak motivation.</p></div></div>
+          <div class="feat-viz feat-bars"><span style="height:40%"></span><span class="vio" style="height:65%"></span><span class="teal" style="height:85%"></span><span style="height:50%"></span><span class="teal" style="height:70%"></span></div>
+        </article>
+        <article class="feat-card reveal d3">
+          <div class="f-head"><div class="f-ico" style="background:rgba(0,212,180,.1)">💡</div><div><h3>Smart wellness insights</h3><p>AI turns your metrics into plain-language next steps — never shame, always forward.</p></div></div>
+          <div class="feat-viz feat-insight">💡 Your resting HR dropped 4 bpm vs last week. Recovery is improving.</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW -->
+  <section id="how" class="section-bordered">
+    <div class="wrap">
+      <div class="sec-tag reveal">How it works</div>
+      <h2 class="sec-title reveal d1">From setup to insight in minutes</h2>
+      <p class="sec-sub reveal d2">Value before effort — see your health picture on day one.</p>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="step-viz" aria-hidden="true">
+            <svg viewBox="0 0 160 110" fill="none">
+              <rect x="48" y="18" width="64" height="74" rx="18" stroke="rgba(0,212,180,.45)" stroke-width="2" fill="rgba(0,212,180,.06)"/>
+              <rect x="58" y="28" width="44" height="44" rx="22" fill="rgba(22,29,46,.9)" stroke="rgba(0,212,180,.35)"/>
+              <circle cx="80" cy="50" r="14" stroke="var(--pulse-teal)" stroke-width="3" stroke-dasharray="55 88" stroke-linecap="round" transform="rotate(-90 80 50)"/>
+              <path d="M74 50h6l3-6 4 12 3-6h6" stroke="var(--danger-red)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M28 42c12-18 28-10 36 4M132 42c-12-18-28-10-36 4" stroke="var(--vital-violet)" stroke-width="1.5" stroke-linecap="round" opacity=".7"/>
+              <circle cx="28" cy="42" r="4" fill="var(--vital-violet)" opacity=".8"/>
+              <circle cx="132" cy="42" r="4" fill="var(--vital-violet)" opacity=".8"/>
+            </svg>
+          </div>
+          <div class="num">01 · CONNECT</div>
+          <h3>Sync your wearables</h3>
+          <p>Link your band or watch. Heart rate, steps, and sleep flow in automatically.</p>
+        </div>
+        <div class="step reveal d1">
+          <div class="step-viz" aria-hidden="true">
+            <svg viewBox="0 0 160 110" fill="none">
+              <circle cx="52" cy="55" r="28" stroke="var(--border)" stroke-width="6"/>
+              <circle cx="52" cy="55" r="28" stroke="var(--pulse-teal)" stroke-width="6" stroke-dasharray="110 176" stroke-linecap="round" transform="rotate(-90 52 55)"/>
+              <circle cx="52" cy="55" r="28" stroke="var(--bio-amber)" stroke-width="6" stroke-dasharray="40 176" stroke-linecap="round" transform="rotate(40 52 55)"/>
+              <text x="52" y="59" text-anchor="middle" fill="var(--text-primary)" font-size="11" font-family="JetBrains Mono, monospace" font-weight="700">68%</text>
+              <rect x="96" y="28" width="48" height="16" rx="8" fill="rgba(245,158,11,.15)" stroke="rgba(245,158,11,.4)"/>
+              <rect x="102" y="33" width="8" height="6" rx="2" fill="var(--bio-amber)"/>
+              <rect x="96" y="52" width="48" height="16" rx="8" fill="rgba(0,212,180,.12)" stroke="rgba(0,212,180,.35)"/>
+              <rect x="102" y="57" width="8" height="6" rx="2" fill="var(--pulse-teal)"/>
+              <rect x="96" y="76" width="48" height="16" rx="8" fill="rgba(56,189,248,.12)" stroke="rgba(56,189,248,.35)"/>
+              <circle cx="106" cy="84" r="3.5" fill="#38BDF8"/>
+            </svg>
+          </div>
+          <div class="num">02 · TRACK</div>
+          <h3>Log nutrition &amp; hydration</h3>
+          <p>Add meals in seconds. Your daily goal ring fills as you go.</p>
+        </div>
+        <div class="step reveal d2">
+          <div class="step-viz" aria-hidden="true">
+            <svg viewBox="0 0 160 110" fill="none">
+              <rect x="18" y="22" width="124" height="66" rx="14" fill="rgba(124,92,252,.08)" stroke="rgba(124,92,252,.35)"/>
+              <path d="M32 62c8-18 14-6 22-22 8 28 14 10 22 4 6 12 12 6 20 14" stroke="var(--pulse-teal)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="126" cy="40" r="10" fill="rgba(0,212,180,.15)" stroke="var(--pulse-teal)"/>
+              <path d="M122 40l3 3 6-7" stroke="var(--pulse-teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="32" y="78" width="72" height="6" rx="3" fill="rgba(240,244,255,.12)"/>
+              <rect x="32" y="78" width="48" height="6" rx="3" fill="var(--vital-violet)" opacity=".7"/>
+            </svg>
+          </div>
+          <div class="num">03 · UNDERSTAND</div>
+          <h3>Get smart insights</h3>
+          <p>Each metric becomes a one-line story — what it means, what to do next.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="download">
+    <div class="cta-strip reveal">
+      <h2>Ready to simplify your health?</h2>
+      <p>Join Tracto Healthcare — calm, connected, intelligent.</p>
+      <a href="signup.html" class="btn-primary">Create free account</a>
+      <p class="sso">Continue with Google · Apple ID</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>Tracto Healthcare · Your daily health, simplified.</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
