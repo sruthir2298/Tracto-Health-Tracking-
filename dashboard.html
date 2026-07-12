@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Tracto Healthcare</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="app.css">
+</head>
+<body class="app-body" data-page="dashboard">
+<div class="app-shell" id="app-shell">
+  <main class="app-main">
+    <header class="page-header">
+      <div>
+        <h1>Good morning, Sruthi</h1>
+        <p class="sub">Here’s how your health is looking today.</p>
+      </div>
+      <div class="header-actions">
+        <button type="button" class="icon-btn" aria-label="Notifications" id="btn-notify">
+          <span class="badge-dot" aria-hidden="true"></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 9a6 6 0 0112 0c0 7 2 7 2 9H4c0-2 2-2 2-9z" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 20a2 2 0 004 0" stroke-linecap="round"/></svg>
+        </button>
+        <div class="avatar" aria-hidden="true">S</div>
+        <button type="button" class="btn btn-teal btn-sm" data-open-log>+ Log activity</button>
+      </div>
+    </header>
+
+    <div class="stack">
+      <!-- Health score -->
+      <section class="card">
+        <div class="card-title">Today’s Health Score</div>
+        <div class="score-hero">
+          <div class="ring-wrap" id="score-ring"></div>
+          <div style="flex:1;min-width:180px">
+            <div class="card-value">82 <span class="unit">/ 100</span></div>
+            <p class="card-meta">You’re doing well. A short evening walk can help you reach your daily activity goal.</p>
+            <div class="contrib-grid">
+              <div class="contrib"><div class="c-val" style="color:var(--vital-violet)">78</div><div class="c-lbl">Sleep</div></div>
+              <div class="contrib"><div class="c-val" style="color:var(--pulse-teal)">64</div><div class="c-lbl">Activity</div></div>
+              <div class="contrib"><div class="c-val" style="color:var(--danger-red)">88</div><div class="c-lbl">Heart</div></div>
+              <div class="contrib"><div class="c-val" style="color:var(--bio-amber)">75</div><div class="c-lbl">Nutrition</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Metric cards -->
+      <div class="grid-2">
+        <article class="card">
+          <div class="metric-card-ico" style="background:rgba(255,77,109,.12);color:var(--danger-red)">♥</div>
+          <div class="card-title">Heart Rate</div>
+          <div class="card-value">72 <span class="unit">bpm</span></div>
+          <p class="card-meta">Resting heart rate</p>
+          <span class="pill ok" style="margin-top:.5rem">Within your normal range</span>
+          <div class="mini-bars" style="height:22px;margin-top:.65rem" aria-hidden="true">
+            <i style="--h:40%;background:rgba(255,77,109,.5)"></i>
+            <i style="--h:55%;background:rgba(255,77,109,.5)"></i>
+            <i style="--h:35%;background:rgba(255,77,109,.5)"></i>
+            <i style="--h:70%;background:rgba(255,77,109,.5)"></i>
+            <i style="--h:45%;background:rgba(255,77,109,.5)"></i>
+            <i style="--h:60%;background:rgba(255,77,109,.5)"></i>
+          </div>
+          <a class="card-link" href="heart-rate.html">View heart details →</a>
+        </article>
+
+        <article class="card">
+          <div class="metric-card-ico" style="background:rgba(0,212,180,.12);color:var(--pulse-teal)">🏃</div>
+          <div class="card-title">Daily Activity</div>
+          <div class="card-value">6,420 <span class="unit">steps</span></div>
+          <p class="card-meta">64% of your daily goal</p>
+          <div style="margin-top:.75rem">
+            <div class="bar-row"><span>6,420 / 10,000 steps</span><span>64%</span></div>
+            <div class="bar-track"><div class="bar-fill grad" style="width:64%"></div></div>
+          </div>
+          <p class="card-meta" style="margin-top:.65rem">4.8 km · 286 kcal · 54 active min</p>
+          <a class="card-link" href="activity.html">View activity →</a>
+        </article>
+
+        <article class="card">
+          <div class="metric-card-ico" style="background:rgba(245,158,11,.12);color:var(--bio-amber)">🥗</div>
+          <div class="card-title">Nutrition</div>
+          <div class="card-value">1,420 <span class="unit">kcal</span></div>
+          <p class="card-meta">of 1,900 kcal daily target</p>
+          <div style="margin-top:.75rem">
+            <div class="bar-row"><span>Protein 68 g</span><span>Carbs 152 g</span><span>Fat 46 g</span></div>
+            <div class="bar-track"><div class="bar-fill amber" style="width:75%"></div></div>
+          </div>
+          <button type="button" class="card-link" data-open-log="meal">Log a meal</button>
+        </article>
+
+        <article class="card">
+          <div class="metric-card-ico" style="background:rgba(124,92,252,.14);color:var(--vital-violet)">☾</div>
+          <div class="card-title">Sleep</div>
+          <div class="card-value">7 hr 24 min</div>
+          <p class="card-meta">Good sleep quality</p>
+          <span class="pill ok" style="margin-top:.5rem">Quality: Good</span>
+          <div class="mini-bars" style="margin-top:.65rem" aria-hidden="true">
+            <i style="--h:55%"></i><i style="--h:70%"></i><i style="--h:45%"></i><i style="--h:80%"></i><i style="--h:65%"></i><i style="--h:75%"></i><i style="--h:60%"></i>
+          </div>
+          <a class="card-link" href="sleep.html">View sleep insights →</a>
+        </article>
+      </div>
+
+      <!-- Insight -->
+      <section class="insight-card">
+        <h3>Today’s insight</h3>
+        <p>Your resting heart rate has been more consistent this week. Maintaining your current sleep schedule may be helping.</p>
+        <button type="button" class="card-link" id="btn-insights" style="margin-top:.5rem">Explore insights</button>
+      </section>
+
+      <!-- Reminders -->
+      <section class="card">
+        <div class="card-title">Next up</div>
+        <div class="reminder-item"><span class="time">6:30 PM</span><span>Evening walk</span></div>
+        <div class="reminder-item"><span class="time">7:15 PM</span><span>Drink water</span></div>
+        <div class="reminder-item"><span class="time">10:30 PM</span><span>Wind-down routine</span></div>
+        <button type="button" class="card-link" id="btn-reminders">Manage reminders</button>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script src="app-shell.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const ring = document.getElementById('score-ring');
+  ring.innerHTML = Tracto.ringSVG(82, 'lg', 'dashScore') +
+    '<div class="ring-center"><span class="val">82</span><span class="lbl">Score</span></div>';
+
+  document.getElementById('btn-notify').addEventListener('click', () => {
+    Tracto.toast('3 reminders for this evening');
+  });
+  document.getElementById('btn-insights').addEventListener('click', () => {
+    window.location.href = 'heart-rate.html';
+  });
+  document.getElementById('btn-reminders').addEventListener('click', () => {
+    Tracto.openModal({
+      title: 'Manage reminders',
+      content: '<p style="font-size:.85rem;color:var(--text-secondary);margin-bottom:1rem">Toggle tonight’s reminders (prototype).</p>' +
+        ['Evening walk','Drink water','Wind-down routine'].map((r,i) =>
+          '<div class="toggle-row"><span>'+r+'</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>'
+        ).join('') +
+        '<div class="modal-actions"><button type="button" class="btn btn-teal" id="save-rem">Save</button></div>',
+      onOpen(m, close) {
+        m.querySelector('#save-rem').onclick = () => { Tracto.toast('Reminders updated'); close(); };
+      }
+    });
+  });
+});
+</script>
+</body>
+</html>
